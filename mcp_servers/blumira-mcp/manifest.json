@@ -1,0 +1,48 @@
+{
+  "manifest_version": "0.3",
+  "name": "blumira-mcp",
+  "version": "1.0.0",
+  "display_name": "Blumira MCP Server",
+  "description": "MCP server for Blumira SIEM — manage findings, agents, users, and MSP accounts through AI assistants",
+  "long_description": "Provides AI assistants with structured access to your Blumira SIEM data. Search and manage security findings, monitor agents, list users, and handle MSP multi-account operations through the Model Context Protocol. Features decision-tree navigation, dual transport (stdio + HTTP streaming), and comprehensive error handling.",
+  "author": {
+    "name": "w159",
+    "url": "https://github.com/w159"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w159/blumira-mcp"
+  },
+  "homepage": "https://github.com/w159/blumira-mcp",
+  "license": "Apache-2.0",
+  "keywords": ["blumira", "siem", "msp", "security", "mcp"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "BLUMIRA_JWT_TOKEN": "${user_config.jwt_token}",
+        "MCP_TRANSPORT": "stdio"
+      }
+    }
+  },
+  "tools_generated": true,
+  "user_config": {
+    "jwt_token": {
+      "type": "string",
+      "title": "JWT Token",
+      "description": "Your Blumira API JWT token (Bearer token)",
+      "required": true,
+      "sensitive": true
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    },
+    "claude_desktop": ">=0.10.0"
+  }
+}

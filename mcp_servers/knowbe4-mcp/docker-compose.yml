@@ -1,0 +1,18 @@
+services:
+  mcp:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      - MCP_TRANSPORT=http
+      - MCP_HTTP_PORT=8080
+      - AUTH_MODE=${AUTH_MODE:-env}
+      - KNOWBE4_API_KEY=${KNOWBE4_API_KEY}
+      - KNOWBE4_REGION=${KNOWBE4_REGION:-us}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

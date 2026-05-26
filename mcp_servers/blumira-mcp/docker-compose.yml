@@ -1,0 +1,42 @@
+services:
+  blumira-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    image: blumira-mcp:latest
+    container_name: blumira-mcp-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - BLUMIRA_JWT_TOKEN=${BLUMIRA_JWT_TOKEN}
+      - MCP_TRANSPORT=http
+      - MCP_HTTP_PORT=8080
+      - AUTH_MODE=${AUTH_MODE:-env}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - NODE_ENV=production
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    volumes:
+      - blumira-mcp-logs:/app/logs
+
+volumes:
+  blumira-mcp-logs:
+    driver: local

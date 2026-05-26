@@ -1,0 +1,51 @@
+{
+  "manifest_version": "0.3",
+  "name": "knowbe4-mcp",
+  "display_name": "KnowBe4 MCP Server",
+  "version": "1.0.0",
+  "description": "MCP server for KnowBe4 — security awareness training, phishing simulation, and user risk management.",
+  "long_description": "Provides Claude with tools to interact with the KnowBe4 Reporting API. Manage phishing campaigns, training enrollments, user risk scores, groups, policies, store purchases, and generate security awareness reports. Supports all KnowBe4 regions (US, EU, CA, UK, DE).",
+  "author": {
+    "name": "w159",
+    "url": "https://github.com/w159"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w159/mcp-server-knowbe4"
+  },
+  "license": "Apache-2.0",
+  "keywords": ["knowbe4", "security-awareness", "phishing", "training", "mcp", "msp"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "KNOWBE4_API_KEY": "${user_config.api_key}",
+        "KNOWBE4_REGION": "${user_config.region}"
+      }
+    }
+  },
+  "tools_generated": true,
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "API Key",
+      "description": "Your KnowBe4 Reporting API key (from Account Settings > API)",
+      "required": true,
+      "sensitive": true
+    },
+    "region": {
+      "type": "string",
+      "title": "Region",
+      "description": "KnowBe4 API region (us, eu, ca, uk, de). Defaults to us.",
+      "required": false
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "node": ">=20.0.0" },
+    "claude_desktop": ">=0.10.0"
+  }
+}

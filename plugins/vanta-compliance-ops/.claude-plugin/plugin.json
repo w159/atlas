@@ -1,0 +1,9 @@
+{
+  "name": "vanta-compliance-ops",
+  "version": "0.1.0",
+  "description": "Vanta GRC power skills: framework-readiness audits, evidence-gap hunting, vendor risk rollups, and vulnerability triage backed by the Vanta MCP server.",
+  "author": "tech-agent",
+  "mcp_dependencies": ["vanta-mcp"],
+  "skills_dir": "skills",
+  "commands_dir": "commands"
+}

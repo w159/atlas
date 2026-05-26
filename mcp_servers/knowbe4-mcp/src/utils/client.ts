@@ -1,0 +1,155 @@
+/**
+ * KnowBe4 HTTP client and credential management.
+ *
+ * In gateway mode (AUTH_MODE=gateway), per-request credentials are stored
+ * in AsyncLocalStorage to prevent cross-tenant leakage under concurrent load.
+ *
+ * In env mode (AUTH_MODE=env or unset), credentials come from
+ * KNOWBE4_API_KEY and KNOWBE4_REGION environment variables directly.
+ *
+ * Authentication: Bearer token via Authorization header.
+ *
+ * Base URLs by region:
+ * - US: https://us.api.knowbe4.com
+ * - EU: https://eu.api.knowbe4.com
+ * - CA: https://ca.api.knowbe4.com
+ * - UK: https://uk.api.knowbe4.com
+ * - DE: https://de.api.knowbe4.com
+ *
+ * Rate limits: 2,000 requests/day + licensed user count,
+ * 4 requests/second max, 50 requests/minute burst limit.
+ */
+
+import { AsyncLocalStorage } from "node:async_hooks";
+import { logger } from "./logger.js";
+import { KNOWBE4_REGIONS, type KnowBe4Credentials } from "./types.js";
+
+/**
+ * Per-request credential store for gateway mode.
+ * Prevents cross-tenant leakage when concurrent requests
+ * are handled by the same process.
+ */
+export const credentialStore = new AsyncLocalStorage<KnowBe4Credentials>();
+
+/**
+ * Get credentials from the request-scoped store (gateway mode)
+ * or from environment variables (stdio/env mode).
+ */
+export function getCredentials(): KnowBe4Credentials | null {
+  // Check request-scoped credentials first (gateway mode)
+  const override = credentialStore.getStore();
+  if (override) {
+    return override;
+  }
+
+  // Fall back to environment variables (stdio/env mode)
+  const apiKey = process.env.KNOWBE4_API_KEY;
+
+  if (!apiKey) {
+    logger.warn("Missing credentials", { hasApiKey: false });
+    return null;
+  }
+
+  const region = (process.env.KNOWBE4_REGION || "us").toLowerCase();
+  const baseUrl = process.env.KNOWBE4_BASE_URL || KNOWBE4_REGIONS[region] || KNOWBE4_REGIONS.us;
+
+  return { apiKey, baseUrl };
+}
+
+/**
+ * Make an authenticated HTTP request to the KnowBe4 API.
+ * Reads credentials fresh from env on each call so gateway mode
+ * header injection is always reflected.
+ */
+export async function apiRequest<T>(
+  path: string,
+  options: {
+    method?: string;
+    body?: unknown;
+    params?: Record<string, string | number | boolean | undefined>;
+  } = {}
+): Promise<T> {
+  const creds = getCredentials();
+  if (!creds) {
+    throw new Error(
+      "No KnowBe4 API credentials configured. Please set the KNOWBE4_API_KEY environment variable."
+    );
+  }
+
+  const url = new URL(path, creds.baseUrl);
+
+  if (options.params) {
+    for (const [key, value] of Object.entries(options.params)) {
+      if (value !== undefined) {
+        url.searchParams.set(key, String(value));
+      }
+    }
+  }
+
+  const method = options.method || "GET";
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${creds.apiKey}`,
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  };
+
+  const fetchOptions: RequestInit = {
+    method,
+    headers,
+  };
+
+  if (options.body !== undefined && method !== "GET") {
+    fetchOptions.body = JSON.stringify(options.body);
+  }
+
+  logger.debug("KnowBe4 API request", { method, url: url.toString() });
+
+  const response = await fetch(url.toString(), fetchOptions);
+
+  // Safe: read text once, then try JSON parse
+  const rawText = await response.text();
+  let responseBody: unknown;
+  try {
+    responseBody = JSON.parse(rawText);
+  } catch {
+    responseBody = rawText;
+  }
+
+  if (!response.ok) {
+    const message =
+      typeof responseBody === "object" &&
+      responseBody !== null &&
+      "message" in responseBody
+        ? String((responseBody as Record<string, unknown>).message)
+        : `HTTP ${response.status}: ${response.statusText}`;
+
+    logger.error("KnowBe4 API error", {
+      status: response.status,
+      url: url.toString(),
+      message,
+    });
+
+    if (response.status === 401) {
+      throw new Error(`Authentication failed: ${message}. Check your KNOWBE4_API_KEY.`);
+    }
+    if (response.status === 403) {
+      throw new Error(`Forbidden: ${message}. Insufficient permissions or subscription level.`);
+    }
+    if (response.status === 404) {
+      throw new Error(`Not found: ${message}`);
+    }
+    if (response.status === 429) {
+      throw new Error(`Rate limit exceeded: ${message}. KnowBe4 allows 4 req/sec and 2000+seats req/day.`);
+    }
+    throw new Error(`KnowBe4 API error (${response.status}): ${message}`);
+  }
+
+  return responseBody as T;
+}
+
+/**
+ * Clear cached credentials (useful for testing)
+ */
+export function clearCredentials(): void {
+  // No-op — credentials are read fresh from env each call
+}

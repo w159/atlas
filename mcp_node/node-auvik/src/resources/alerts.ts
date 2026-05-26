@@ -1,0 +1,51 @@
+import type { HttpClient } from '../http.js';
+import type { JsonApiResponse, Page, PaginationOptions } from '../types/json-api.js';
+import type { AlertHistory, DismissAlertRequest } from '../types/alerts.js';
+import { paginate } from '../pagination.js';
+
+export class AlertsResource {
+  constructor(private getClient: () => Promise<HttpClient>) {}
+
+  async listHistory(options: PaginationOptions = {}): Promise<Page<AlertHistory>> {
+    const { pageSize, pageAfter, filters = {} } = options;
+    const params = {
+      ...filters,
+      ...(pageSize && { 'page[first]': pageSize }),
+      ...(pageAfter && { 'page[after]': pageAfter }),
+    };
+
+    const client = await this.getClient();
+    const response = await client.request<JsonApiResponse<AlertHistory>>('/alert/history', { params });
+    const data = Array.isArray(response.data) ? response.data : [response.data];
+
+    return {
+      data: data.map(item => ({ id: item.id, type: item.type, ...item.attributes })),
+      links: response.links || {},
+      meta: response.meta || {},
+    };
+  }
+
+  async *listHistoryAll(filters: Record<string, string> = {}): AsyncIterable<AlertHistory> {
+    const client = await this.getClient();
+    for await (const page of paginate<AlertHistory>(client, '/alert/history', filters)) {
+      for (const alert of page.data) {
+        yield alert;
+      }
+    }
+  }
+
+  async getHistory(id: string): Promise<AlertHistory> {
+    const client = await this.getClient();
+    const response = await client.request<JsonApiResponse<AlertHistory>>(`/alert/history/${id}`);
+    const data = Array.isArray(response.data) ? response.data[0] : response.data;
+    return { id: data.id, ...data.attributes } as AlertHistory;
+  }
+
+  async dismiss(id: string, request: DismissAlertRequest = {}): Promise<void> {
+    const client = await this.getClient();
+    await client.request(`/alert/history/${id}/dismiss`, {
+      method: 'POST',
+      body: request,
+    });
+  }
+}

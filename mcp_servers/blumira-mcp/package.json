@@ -1,0 +1,55 @@
+{
+  "name": "blumira-mcp",
+  "version": "1.1.2",
+  "description": "MCP server for Blumira SIEM integration",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "blumira-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prebuild": "npm run clean",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "start:http": "MCP_TRANSPORT=http node dist/http.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
+    "pack:mcpb": "node scripts/pack-mcpb.js",
+    "validate:mcpb": "mcpb validate manifest.json"
+  },
+  "keywords": [
+    "blumira",
+    "mcp",
+    "msp",
+    "security",
+    "siem",
+    "model-context-protocol",
+    "typescript"
+  ],
+  "author": "w159",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "node-blumira": "file:../../mcp_node/node-blumira"
+  },
+  "devDependencies": {
+    "@anthropic-ai/mcpb": "^2.1.2",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.4",
+    "@types/node": "^22.0.0",
+    "semantic-release": "^25.0.3",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

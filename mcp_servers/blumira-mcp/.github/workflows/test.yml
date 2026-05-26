@@ -1,13 +1,7 @@
 name: Test
 
 on:
-  pull_request:
-    branches:
-      - main
-      - next
-      - next-major
-      - beta
-      - alpha
+  workflow_dispatch:
 
 jobs:
   test:

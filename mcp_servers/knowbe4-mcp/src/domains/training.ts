@@ -162,7 +162,7 @@ async function handleCall(
 
       logger.info("API call: training.campaigns.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/training/campaigns", {
+      const result = await apiRequest<unknown>("/v1/training/campaigns", {
         params: { page, per_page: perPage },
       });
 
@@ -193,7 +193,7 @@ async function handleCall(
 
       logger.info("API call: training.campaigns.get", { campaignId });
 
-      const result = await apiRequest<unknown>(`/api/v1/training/campaigns/${campaignId}`);
+      const result = await apiRequest<unknown>(`/v1/training/campaigns/${campaignId}`);
 
       return {
         content: [
@@ -211,7 +211,7 @@ async function handleCall(
 
       logger.info("API call: training.enrollments.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/training/enrollments", {
+      const result = await apiRequest<unknown>("/v1/training/enrollments", {
         params: { page, per_page: perPage },
       });
 
@@ -242,7 +242,7 @@ async function handleCall(
 
       logger.info("API call: training.enrollments.get", { enrollmentId });
 
-      const result = await apiRequest<unknown>(`/api/v1/training/enrollments/${enrollmentId}`);
+      const result = await apiRequest<unknown>(`/v1/training/enrollments/${enrollmentId}`);
 
       return {
         content: [
@@ -260,7 +260,7 @@ async function handleCall(
 
       logger.info("API call: store.purchases.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/store/purchases", {
+      const result = await apiRequest<unknown>("/v1/store/purchases", {
         params: { page, per_page: perPage },
       });
 
@@ -291,7 +291,7 @@ async function handleCall(
 
       logger.info("API call: store.purchases.get", { purchaseId });
 
-      const result = await apiRequest<unknown>(`/api/v1/store/purchases/${purchaseId}`);
+      const result = await apiRequest<unknown>(`/v1/store/purchases/${purchaseId}`);
 
       return {
         content: [
@@ -309,7 +309,7 @@ async function handleCall(
 
       logger.info("API call: policies.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/policies", {
+      const result = await apiRequest<unknown>("/v1/policies", {
         params: { page, per_page: perPage },
       });
 
@@ -340,7 +340,7 @@ async function handleCall(
 
       logger.info("API call: policies.get", { policyId });
 
-      const result = await apiRequest<unknown>(`/api/v1/policies/${policyId}`);
+      const result = await apiRequest<unknown>(`/v1/policies/${policyId}`);
 
       return {
         content: [

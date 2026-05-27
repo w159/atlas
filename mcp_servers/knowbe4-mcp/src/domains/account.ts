@@ -51,7 +51,7 @@ async function handleCall(
     case "knowbe4_account_get": {
       logger.info("API call: account.get");
 
-      const result = await apiRequest<unknown>("/api/v1/account");
+      const result = await apiRequest<unknown>("/v1/account");
 
       logger.debug("API response: account.get", {
         hasResult: !!result,
@@ -73,7 +73,7 @@ async function handleCall(
 
       logger.info("API call: account.riskScoreHistory", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/account/risk_score_history", {
+      const result = await apiRequest<unknown>("/v1/account/risk_score_history", {
         params: { page, per_page: perPage },
       });
 

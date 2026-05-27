@@ -122,7 +122,16 @@ const SERVERS = {
     required: ['PAYLOCITY_CLIENT_ID', 'PAYLOCITY_CLIENT_SECRET', 'PAYLOCITY_COMPANY_ID'],
     tools: [
       { name: 'paylocity_status', args: {}, label: 'status check' },
-      { name: 'paylocity_employees_list', args: { limit: 1 }, label: 'list one employee' },
+      { name: 'paylocity_legacy_employees_list', args: {}, label: 'list employees (legacy v2)' },
+    ],
+  },
+  spanning: {
+    bundle: 'mcp_servers/kaseya-spanning-backup-mcp/kaseya-spanning-backup-mcp.mcpb',
+    required: ['SPANNING_ADMIN_EMAIL', 'SPANNING_API_TOKEN'],
+    tools: [
+      { name: 'spanning_status', args: {}, label: 'status check' },
+      { name: 'spanning_license_get', args: {}, label: 'license / seat usage' },
+      { name: 'spanning_users_list', args: { limit: 1 }, label: 'list one user' },
     ],
   },
 };
@@ -151,7 +160,7 @@ class McpClient {
         .replace(/\$\{__dirname\}/g, this.bundleDir)
         .replace(/\$\{user_config\.([a-z0-9_]+)\}/gi, (_, key) => {
           const upper = key.toUpperCase();
-          return this.env[upper] ?? '';
+          return this.env[upper] ?? this.env[k] ?? '';
         });
       procEnv[k] = replaced;
     }

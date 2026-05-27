@@ -53,7 +53,7 @@ describe("Training Domain Handler", () => {
 
       const result = await trainingHandler.handleCall("knowbe4_training_campaigns_list", {});
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/training/campaigns", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/training/campaigns", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();
@@ -67,7 +67,7 @@ describe("Training Domain Handler", () => {
         campaign_id: 1,
       });
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/training/campaigns/1");
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/training/campaigns/1");
       expect(result.isError).toBeUndefined();
     });
 
@@ -79,7 +79,7 @@ describe("Training Domain Handler", () => {
 
       const result = await trainingHandler.handleCall("knowbe4_training_enrollments_list", {});
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/training/enrollments", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/training/enrollments", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();
@@ -93,7 +93,7 @@ describe("Training Domain Handler", () => {
 
       const result = await trainingHandler.handleCall("knowbe4_store_purchases_list", {});
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/store/purchases", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/store/purchases", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();
@@ -107,7 +107,7 @@ describe("Training Domain Handler", () => {
 
       const result = await trainingHandler.handleCall("knowbe4_policies_list", {});
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/policies", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/policies", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();

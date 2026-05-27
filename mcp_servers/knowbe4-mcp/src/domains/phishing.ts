@@ -162,7 +162,7 @@ async function handleCall(
 
       logger.info("API call: phishing.campaigns.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/phishing/campaigns", {
+      const result = await apiRequest<unknown>("/v1/phishing/campaigns", {
         params: { page, per_page: perPage },
       });
 
@@ -193,7 +193,7 @@ async function handleCall(
 
       logger.info("API call: phishing.campaigns.get", { campaignId });
 
-      const result = await apiRequest<unknown>(`/api/v1/phishing/campaigns/${campaignId}`);
+      const result = await apiRequest<unknown>(`/v1/phishing/campaigns/${campaignId}`);
 
       return {
         content: [
@@ -211,7 +211,7 @@ async function handleCall(
 
       logger.info("API call: phishing.securityTests.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/phishing/security_tests", {
+      const result = await apiRequest<unknown>("/v1/phishing/security_tests", {
         params: { page, per_page: perPage },
       });
 
@@ -245,7 +245,7 @@ async function handleCall(
 
       logger.info("API call: phishing.campaignTests", { campaignId, page, perPage });
 
-      const result = await apiRequest<unknown>(`/api/v1/phishing/campaigns/${campaignId}/security_tests`, {
+      const result = await apiRequest<unknown>(`/v1/phishing/campaigns/${campaignId}/security_tests`, {
         params: { page, per_page: perPage },
       });
 
@@ -272,7 +272,7 @@ async function handleCall(
 
       logger.info("API call: phishing.securityTest.get", { pstId });
 
-      const result = await apiRequest<unknown>(`/api/v1/phishing/security_tests/${pstId}`);
+      const result = await apiRequest<unknown>(`/v1/phishing/security_tests/${pstId}`);
 
       return {
         content: [
@@ -298,7 +298,7 @@ async function handleCall(
 
       logger.info("API call: phishing.securityTest.recipients", { pstId, page, perPage });
 
-      const result = await apiRequest<unknown>(`/api/v1/phishing/security_tests/${pstId}/recipients`, {
+      const result = await apiRequest<unknown>(`/v1/phishing/security_tests/${pstId}/recipients`, {
         params: { page, per_page: perPage },
       });
 
@@ -327,7 +327,7 @@ async function handleCall(
       logger.info("API call: phishing.securityTest.recipient", { pstId, recipientId });
 
       const result = await apiRequest<unknown>(
-        `/api/v1/phishing/security_tests/${pstId}/recipients/${recipientId}`
+        `/v1/phishing/security_tests/${pstId}/recipients/${recipientId}`
       );
 
       return {

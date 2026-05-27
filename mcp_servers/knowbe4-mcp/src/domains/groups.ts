@@ -109,7 +109,7 @@ async function handleCall(
 
       logger.info("API call: groups.list", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/groups", {
+      const result = await apiRequest<unknown>("/v1/groups", {
         params: { page, per_page: perPage },
       });
 
@@ -140,7 +140,7 @@ async function handleCall(
 
       logger.info("API call: groups.get", { groupId });
 
-      const result = await apiRequest<unknown>(`/api/v1/groups/${groupId}`);
+      const result = await apiRequest<unknown>(`/v1/groups/${groupId}`);
 
       logger.debug("API response: groups.get", { groupId });
 
@@ -168,7 +168,7 @@ async function handleCall(
 
       logger.info("API call: groups.members", { groupId, page, perPage });
 
-      const result = await apiRequest<unknown>(`/api/v1/groups/${groupId}/members`, {
+      const result = await apiRequest<unknown>(`/v1/groups/${groupId}/members`, {
         params: { page, per_page: perPage },
       });
 
@@ -202,7 +202,7 @@ async function handleCall(
 
       logger.info("API call: groups.riskScoreHistory", { groupId, page, perPage });
 
-      const result = await apiRequest<unknown>(`/api/v1/groups/${groupId}/risk_score_history`, {
+      const result = await apiRequest<unknown>(`/v1/groups/${groupId}/risk_score_history`, {
         params: { page, per_page: perPage },
       });
 

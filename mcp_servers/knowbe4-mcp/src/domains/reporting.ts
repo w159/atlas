@@ -76,7 +76,7 @@ async function handleCall(
       logger.info("API call: reporting.phishingSummary", { page, perPage });
 
       // Fetch PSTs
-      const result = await apiRequest<unknown>("/api/v1/phishing/security_tests", {
+      const result = await apiRequest<unknown>("/v1/phishing/security_tests", {
         params: { page, per_page: perPage },
       });
 
@@ -141,7 +141,7 @@ async function handleCall(
 
       logger.info("API call: reporting.trainingSummary", { page, perPage });
 
-      const result = await apiRequest<unknown>("/api/v1/training/campaigns", {
+      const result = await apiRequest<unknown>("/v1/training/campaigns", {
         params: { page, per_page: perPage },
       });
 
@@ -185,10 +185,10 @@ async function handleCall(
       logger.info("API call: reporting.riskOverview");
 
       // Fetch account info for current risk score
-      const account = await apiRequest<Record<string, unknown>>("/api/v1/account");
+      const account = await apiRequest<Record<string, unknown>>("/v1/account");
 
       // Fetch recent risk score history
-      const historyResult = await apiRequest<unknown>("/api/v1/account/risk_score_history", {
+      const historyResult = await apiRequest<unknown>("/v1/account/risk_score_history", {
         params: { page: 1, per_page: 10 },
       });
       const history = Array.isArray(historyResult)
@@ -196,7 +196,7 @@ async function handleCall(
         : (historyResult as Record<string, unknown>)?.data ?? [];
 
       // Fetch groups for highest-risk groups
-      const groupsResult = await apiRequest<unknown>("/api/v1/groups", {
+      const groupsResult = await apiRequest<unknown>("/v1/groups", {
         params: { page: 1, per_page: 500 },
       });
       const groups = Array.isArray(groupsResult)

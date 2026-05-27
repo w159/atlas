@@ -1,0 +1,43 @@
+{
+  "name": "kaseya-spanning-backup-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Kaseya Spanning Backup — SaaS backup for Microsoft 365, Google Workspace, and Salesforce. Exposes users, services, backups, restores, audit, and license operations through the Model Context Protocol.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "kaseya-spanning-backup-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "prebuild": "npm run clean",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist",
+    "pack:mcpb": "node scripts/pack-mcpb.js"
+  },
+  "keywords": [
+    "kaseya",
+    "spanning",
+    "backup",
+    "mcp",
+    "msp",
+    "model-context-protocol",
+    "microsoft-365",
+    "google-workspace",
+    "salesforce"
+  ],
+  "author": "w159",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "node-spanning": "file:../../mcp_node/node-spanning"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

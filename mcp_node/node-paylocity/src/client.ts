@@ -39,7 +39,10 @@ export class PaylocityClient {
     const root =
       config.baseUrl ??
       (config.sandbox ? SANDBOX_BASE : PROD_BASE);
-    this.baseUrl = root.replace(/\/+$/, '');
+    // Strip trailing slashes and a trailing "/api" segment if the caller
+    // pasted one in — Paylocity's modern endpoints (e.g. /coreHr/v1/...) and
+    // the OAuth token endpoint both live at the host root, not under /api.
+    this.baseUrl = root.replace(/\/+$/, '').replace(/\/api$/i, '');
     const tokenUrl =
       config.tokenUrl ?? `${this.baseUrl}/IdentityServer/connect/token`;
     const scope = config.scope ?? DEFAULT_SCOPE;

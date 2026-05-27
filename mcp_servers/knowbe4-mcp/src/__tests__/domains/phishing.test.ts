@@ -53,7 +53,7 @@ describe("Phishing Domain Handler", () => {
 
       const result = await phishingHandler.handleCall("knowbe4_phishing_campaigns_list", {});
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/phishing/campaigns", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/phishing/campaigns", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();
@@ -70,7 +70,7 @@ describe("Phishing Domain Handler", () => {
         campaign_id: 1,
       });
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/phishing/campaigns/1");
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/phishing/campaigns/1");
       expect(result.isError).toBeUndefined();
     });
 
@@ -88,7 +88,7 @@ describe("Phishing Domain Handler", () => {
 
       const result = await phishingHandler.handleCall("knowbe4_phishing_security_tests_list", {});
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/phishing/security_tests", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/phishing/security_tests", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();
@@ -104,7 +104,7 @@ describe("Phishing Domain Handler", () => {
         pst_id: 10,
       });
 
-      expect(mockApiRequest).toHaveBeenCalledWith("/api/v1/phishing/security_tests/10/recipients", {
+      expect(mockApiRequest).toHaveBeenCalledWith("/v1/phishing/security_tests/10/recipients", {
         params: { page: 1, per_page: 100 },
       });
       expect(result.isError).toBeUndefined();

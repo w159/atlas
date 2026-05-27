@@ -3,53 +3,43 @@ import { getCredentials } from '../credentials.js';
 import { createAuvikClient } from '../client-factory.js';
 import { toMcpError } from '../errors.js';
 
+const noCreds = () => ({ content: [{ type: 'text' as const, text: 'No Auvik credentials configured.' }], isError: true });
+const ok = (r: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(r, null, 2) }] });
+const fail = (e: unknown) => { const m = toMcpError(e); return { content: [{ type: 'text' as const, text: m.message }], isError: true }; };
+
 export const interfacesListTool: Tool = {
   name: 'auvik_interfaces_list',
-  description: 'List network interfaces discovered by Auvik; filter by parent device or interface type. Use before fetching interface statistics.',
+  description: 'GET /v1/inventory/interface/info — list network interfaces. Required before fetching interface statistics.',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number (optional)' },
-      pageSize: { type: 'number', description: 'Number of items per page (1-1000, optional)' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-      filter_parentDevice: { type: 'string', description: 'Filter by parent device ID (optional)' },
-      filter_interfaceType: { type: 'string', description: 'Filter by interface type (optional)' },
+      tenants: { type: 'string', description: 'Comma-separated tenant IDs (required).' },
+      pageSize: { type: 'number' },
+      pageAfter: { type: 'string' },
+      filter_interfaceType: { type: 'string', description: 'filter[interfaceType].' },
+      filter_parentDevice: { type: 'string', description: 'filter[parentDevice] — parent device ID.' },
+      filter_operationalStatus: { type: 'string', description: 'filter[operationalStatus] (e.g. online/offline).' },
+      filter_adminStatus: { type: 'boolean', description: 'filter[adminStatus].' },
     },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
-export async function handleInterfacesList(args: any = {}): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
+export const interfacesGetTool: Tool = {
+  name: 'auvik_interfaces_get',
+  description: 'GET /v1/inventory/interface/info/{interfaceId} — single interface.',
+  inputSchema: {
+    type: 'object',
+    properties: { interfaceId: { type: 'string', description: 'Auvik interface ID.' } },
+    required: ['interfaceId'],
+    additionalProperties: false,
+  },
+};
 
-    const client = createAuvikClient(credentials);
-    const response = await client.interfaces.list(args);
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik interfaces found for specified criteria' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleInterfacesList(args: Record<string, unknown>) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).interfaces.list(args)); } catch (e) { return fail(e); }
+}
+export async function handleInterfacesGet(args: { interfaceId: string }) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).interfaces.get(args.interfaceId)); } catch (e) { return fail(e); }
 }

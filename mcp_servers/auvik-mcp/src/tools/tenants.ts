@@ -3,149 +3,55 @@ import { getCredentials } from '../credentials.js';
 import { createAuvikClient } from '../client-factory.js';
 import { toMcpError } from '../errors.js';
 
-export const tenantsListTool: Tool = {
-  name: 'auvik_tenants_list',
-  description: 'List all Auvik tenants accessible with the current credentials. Returns tenant IDs needed for other multi-tenant tool calls.',
-  inputSchema: {
-    type: 'object',
-    properties: {},
-    additionalProperties: false,
-  },
+const noCredsResult = () => ({
+  content: [{ type: 'text' as const, text: 'No Auvik credentials configured (AUVIK_USERNAME / AUVIK_API_KEY required).' }],
+  isError: true,
+});
+
+const ok = (response: unknown) => ({
+  content: [{ type: 'text' as const, text: JSON.stringify(response, null, 2) }],
+});
+
+const fail = (e: unknown) => {
+  const m = toMcpError(e);
+  return { content: [{ type: 'text' as const, text: m.message }], isError: true };
 };
 
-export const tenantsGetTool: Tool = {
-  name: 'auvik_tenants_get',
-  description: 'Get basic info (name, domain type) for an Auvik tenant by tenantId (required). Use to confirm a tenant before scoping other calls.',
-  inputSchema: {
-    type: 'object',
-    properties: {
-      tenantId: {
-        type: 'string',
-        description: 'The Auvik tenant ID',
-      },
-    },
-    required: ['tenantId'],
-    additionalProperties: false,
-  },
+export const tenantsListTool: Tool = {
+  name: 'auvik_tenants_list',
+  description: 'GET /v1/tenants — list all Auvik tenants (MSP clients + parents) accessible to the current credentials. Returns tenant IDs (numeric string) and domainPrefix used by other endpoints.',
+  inputSchema: { type: 'object', properties: {}, additionalProperties: false },
 };
 
 export const tenantsDetailTool: Tool = {
   name: 'auvik_tenants_detail',
-  description: 'Get extended detail (settings, feature flags) for an Auvik tenant by tenantId (required). Use when tenant configuration context is needed.',
+  description: 'GET /v1/tenants/detail?tenantDomainPrefix=<prefix> — extended tenant metadata (displayName, subscription, authorizations). Takes the tenant domain PREFIX (e.g. "thfg"), not the tenant ID.',
   inputSchema: {
     type: 'object',
     properties: {
-      tenantId: {
-        type: 'string',
-        description: 'The Auvik tenant ID',
-      },
+      tenantDomainPrefix: { type: 'string', description: 'Tenant domain prefix from /tenants attributes.domainPrefix (e.g. "acme").' },
     },
-    required: ['tenantId'],
+    required: ['tenantDomainPrefix'],
     additionalProperties: false,
   },
 };
 
-export async function handleTenantsList(): Promise<any> {
+export async function handleTenantsList() {
   try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.tenants.list();
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik tenants found' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCredsResult();
+    return ok(await createAuvikClient(c).tenants.list());
+  } catch (e) {
+    return fail(e);
   }
 }
 
-export async function handleTenantsGet(args: { tenantId: string }): Promise<any> {
+export async function handleTenantsDetail(args: { tenantDomainPrefix: string }) {
   try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.tenants.get(args.tenantId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik tenant found with ID: ${args.tenantId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
-}
-
-export async function handleTenantsDetail(args: { tenantId: string }): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.tenants.getDetail(args.tenantId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik tenant detail found with ID: ${args.tenantId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCredsResult();
+    return ok(await createAuvikClient(c).tenants.detail(args.tenantDomainPrefix));
+  } catch (e) {
+    return fail(e);
   }
 }

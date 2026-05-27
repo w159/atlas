@@ -1,39 +1,48 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { getCredentials } from '../credentials.js';
+import { createAuvikClient } from '../client-factory.js';
 
 export const statusTool: Tool = {
   name: 'auvik_status',
-  description: 'Check Auvik MCP server connectivity, credential presence, and available endpoints. Use to diagnose connection issues before other calls.',
-  inputSchema: {
-    type: 'object',
-    properties: {},
-    additionalProperties: false,
-  },
+  description: 'Live preflight: hits GET /v1/authentication/verify and reports whether credentials work and which region they routed to (308 redirects are followed transparently).',
+  inputSchema: { type: 'object', properties: {}, additionalProperties: false },
 };
 
-export async function handleStatus(): Promise<any> {
-  const credentials = getCredentials();
+export async function handleStatus() {
+  const c = getCredentials();
+  if (!c) {
+    return {
+      content: [{ type: 'text' as const, text: JSON.stringify({ ok: false, reason: 'No Auvik credentials configured (AUVIK_USERNAME / AUVIK_API_KEY).' }, null, 2) }],
+      isError: true,
+    };
+  }
 
-  return {
-    content: [{
-      type: 'text' as const,
-      text: JSON.stringify({
-        ok: true,
-        version: '0.1.0',
-        region: credentials?.region || 'us1',
-        hasCredentials: !!credentials,
-        endpoints: {
-          tenants: ['list', 'get', 'detail'],
-          devices: ['list', 'get', 'details', 'warranty', 'lifecycle'],
-          networks: ['list', 'get'],
-          interfaces: ['list'],
-          configurations: ['list', 'get'],
-          entities: ['notes', 'audits'],
-          alerts: ['list', 'get', 'dismiss'],
-          statistics: ['device', 'interface', 'service', 'snmp_poller'],
-          billing: ['client_usage', 'device_usage'],
-        },
-      }, null, 2),
-    }],
-  };
+  const client = createAuvikClient(c);
+  try {
+    await client.verify();
+    return {
+      content: [{
+        type: 'text' as const,
+        text: JSON.stringify({
+          ok: true,
+          configuredRegion: c.region || 'us1',
+          note: 'authentication/verify returned 200. Server auto-follows 308 region redirects on subsequent calls.',
+        }, null, 2),
+      }],
+    };
+  } catch (e: unknown) {
+    const err = e as { status?: number; message?: string };
+    return {
+      content: [{
+        type: 'text' as const,
+        text: JSON.stringify({
+          ok: false,
+          configuredRegion: c.region || 'us1',
+          status: err.status,
+          message: err.message,
+        }, null, 2),
+      }],
+      isError: true,
+    };
+  }
 }

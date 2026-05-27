@@ -3,102 +3,46 @@ import { getCredentials } from '../credentials.js';
 import { createAuvikClient } from '../client-factory.js';
 import { toMcpError } from '../errors.js';
 
+const noCreds = () => ({ content: [{ type: 'text' as const, text: 'No Auvik credentials configured.' }], isError: true });
+const ok = (r: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(r, null, 2) }] });
+const fail = (e: unknown) => { const m = toMcpError(e); return { content: [{ type: 'text' as const, text: m.message }], isError: true }; };
+
 export const entitiesListNotesTool: Tool = {
   name: 'auvik_entities_list_notes',
-  description: 'List notes attached to Auvik entities (devices, networks, etc.); filter by entityId. Use to retrieve operator comments added in Auvik.',
+  description: 'GET /v1/inventory/entity/note — list notes attached to entities (devices, networks).',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number (optional)' },
-      pageSize: { type: 'number', description: 'Number of items per page (1-1000, optional)' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-      filter_entityId: { type: 'string', description: 'Filter by entity ID (optional)' },
+      tenants: { type: 'string', description: 'Comma-separated tenant IDs (required).' },
+      pageSize: { type: 'number' },
+      pageAfter: { type: 'string' },
+      filter_entityId: { type: 'string', description: 'filter[entityId].' },
     },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
 export const entitiesListAuditsTool: Tool = {
   name: 'auvik_entities_list_audits',
-  description: 'List audit log entries for Auvik entities; filter by entityId. Use to trace configuration changes or user actions on a device or network.',
+  description: 'GET /v1/inventory/entity/audit — list audit log entries (user actions: terminal sessions, config changes, etc.).',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number (optional)' },
-      pageSize: { type: 'number', description: 'Number of items per page (1-1000, optional)' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-      filter_entityId: { type: 'string', description: 'Filter by entity ID (optional)' },
+      tenants: { type: 'string', description: 'Comma-separated tenant IDs (required).' },
+      pageSize: { type: 'number' },
+      pageAfter: { type: 'string' },
+      filter_entityId: { type: 'string', description: 'filter[entityId].' },
+      filter_category: { type: 'string', description: 'filter[category], e.g. "terminal".' },
     },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
-export async function handleEntitiesListNotes(args: any = {}): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.entities.listNotes(args);
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik entity notes found for specified criteria' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleEntitiesListNotes(args: Record<string, unknown>) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).entities.listNotes(args)); } catch (e) { return fail(e); }
 }
-
-export async function handleEntitiesListAudits(args: any = {}): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.entities.listAudits(args);
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik entity audits found for specified criteria' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleEntitiesListAudits(args: Record<string, unknown>) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).entities.listAudits(args)); } catch (e) { return fail(e); }
 }

@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
+    "rootDir": "src",
     "outDir": "dist",
     "declaration": false,
     "resolveJsonModule": true,
@@ -13,6 +14,11 @@
     "allowImportingTsExtensions": false,
     "noEmit": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

@@ -3,147 +3,44 @@ import { getCredentials } from '../credentials.js';
 import { createAuvikClient } from '../client-factory.js';
 import { toMcpError } from '../errors.js';
 
+const noCreds = () => ({ content: [{ type: 'text' as const, text: 'No Auvik credentials configured.' }], isError: true });
+const ok = (r: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(r, null, 2) }] });
+const fail = (e: unknown) => { const m = toMcpError(e); return { content: [{ type: 'text' as const, text: m.message }], isError: true }; };
+
 export const alertsListTool: Tool = {
   name: 'auvik_alerts_list',
-  description: 'List Auvik monitoring alerts; filter by status (created/acknowledged/resolved) or severity. Call this to see active or historical alerts across tenants.',
+  description: 'GET /v1/alert/history/info — list alerts. Filterable via filter[status], filter[severity], etc. The single-alert endpoint (auvik_alerts_get) returns the same shape as a list item.',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number (optional)' },
-      pageSize: { type: 'number', description: 'Number of items per page (1-1000, optional)' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-      filter_status: { type: 'string', enum: ['created', 'acknowledged', 'resolved'], description: 'Filter by alert status (optional)' },
-      filter_severity: { type: 'string', enum: ['unknown', 'emergency', 'critical', 'warning', 'info'], description: 'Filter by severity (optional)' },
+      tenants: { type: 'string', description: 'Comma-separated tenant IDs (required).' },
+      pageSize: { type: 'number' },
+      pageAfter: { type: 'string' },
+      filter_status: { type: 'string', enum: ['created', 'acknowledged', 'resolved', 'cleared'], description: 'filter[status].' },
+      filter_severity: { type: 'string', enum: ['unknown', 'emergency', 'critical', 'warning', 'info'], description: 'filter[severity].' },
+      filter_detectedTimeAfter: { type: 'string', description: 'filter[detectedTimeAfter] ISO 8601.' },
+      filter_detectedTimeBefore: { type: 'string', description: 'filter[detectedTimeBefore] ISO 8601.' },
+      filter_dismissed: { type: 'boolean', description: 'filter[dismissed].' },
     },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
 export const alertsGetTool: Tool = {
   name: 'auvik_alerts_get',
-  description: 'Get full details of a single Auvik alert by alertId (required). Use after listing alerts to inspect severity, device, and message.',
+  description: 'GET /v1/alert/history/info/{alertId} — single alert detail.',
   inputSchema: {
     type: 'object',
-    properties: {
-      alertId: { type: 'string', description: 'The Auvik alert ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
+    properties: { alertId: { type: 'string', description: 'Auvik alert ID.' } },
     required: ['alertId'],
     additionalProperties: false,
   },
 };
 
-export const alertsDismissTool: Tool = {
-  name: 'auvik_alerts_dismiss',
-  description: 'Dismiss (acknowledge) an Auvik alert by alertId (required). Use to suppress a resolved or acknowledged alert from the active queue.',
-  inputSchema: {
-    type: 'object',
-    properties: {
-      alertId: { type: 'string', description: 'The Auvik alert ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
-    required: ['alertId'],
-    additionalProperties: false,
-  },
-};
-
-export async function handleAlertsList(args: any = {}): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.alerts.list(args);
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik alerts found for specified criteria' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleAlertsList(args: Record<string, unknown>) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).alerts.list(args)); } catch (e) { return fail(e); }
 }
-
-export async function handleAlertsGet(args: { alertId: string; tenants?: string }): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.alerts.get(args.alertId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik alert found with ID: ${args.alertId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
-}
-
-export async function handleAlertsDismiss(args: { alertId: string; tenants?: string }): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.alerts.dismiss(args.alertId);
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify({
-          message: `Alert ${args.alertId} has been dismissed`,
-          result: response,
-        }, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleAlertsGet(args: { alertId: string }) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).alerts.get(args.alertId)); } catch (e) { return fail(e); }
 }

@@ -2,39 +2,58 @@ import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { getCredentials } from '../credentials.js';
 import { createAuvikClient } from '../client-factory.js';
 import { toMcpError } from '../errors.js';
-import { DevicesListSchema, DeviceGetSchema, DeviceDetailsSchema, DeviceWarrantySchema, DeviceLifecycleSchema } from '../schemas/devices.js';
+
+const noCreds = () => ({
+  content: [{ type: 'text' as const, text: 'No Auvik credentials configured.' }],
+  isError: true,
+});
+const ok = (r: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(r, null, 2) }] });
+const fail = (e: unknown) => {
+  const m = toMcpError(e);
+  return { content: [{ type: 'text' as const, text: m.message }], isError: true };
+};
+
+const tenantsProp = {
+  tenants: {
+    type: 'string',
+    description: 'Comma-separated Auvik tenant IDs (REQUIRED — Auvik rejects unscoped inventory queries on multi-tenant credentials).',
+  },
+} as const;
+
+const pageProps = {
+  pageSize: { type: 'number', description: 'Items per page (page[first]). Max 1000.' },
+  pageAfter: { type: 'string', description: 'Cursor from prior response links.next (page[after]).' },
+} as const;
 
 export const devicesListTool: Tool = {
   name: 'auvik_devices_list',
-  description: 'List Auvik-managed network devices; filter by type, vendor, online status, or modification date. Returns device IDs needed for other device tools.',
+  description: 'GET /v1/inventory/device/info — list Auvik-managed devices. JSON:API. Paginate via links.next (pass page[after] cursor via pageAfter).',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number for pagination (default: 1).' },
-      pageSize: { type: 'number', description: 'Page size — items per page (integer 1-1000).' },
-      tenants: { type: 'string', description: 'Comma-separated Auvik tenant IDs to scope the query.' },
-      filter_deviceType: { type: 'string', description: 'Filter by Auvik device type string, e.g. "switch", "router", "firewall".' },
-      filter_modifiedAfter: { type: 'string', description: 'ISO 8601 datetime — return only devices modified after this time, e.g. 2024-01-01T00:00:00Z.' },
-      filter_vendorName: { type: 'string', description: 'Filter by hardware vendor name, e.g. "Cisco", "HP".' },
+      ...tenantsProp,
+      ...pageProps,
+      filter_deviceType: { type: 'string', description: 'filter[deviceType], e.g. "switch", "router", "firewall".' },
+      filter_modifiedAfter: { type: 'string', description: 'filter[modifiedAfter] ISO 8601.' },
+      filter_makeModel: { type: 'string', description: 'filter[makeModel].' },
+      filter_vendorName: { type: 'string', description: 'filter[vendorName].' },
       filter_onlineStatus: {
         type: 'string',
         enum: ['online', 'offline', 'unreachable', 'testing', 'unknown', 'dormant', 'notPresent', 'lowerLayerDown'],
-        description: 'Filter by current device online status.'
+        description: 'filter[onlineStatus].',
       },
     },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
 export const devicesGetTool: Tool = {
   name: 'auvik_devices_get',
-  description: 'Get basic info (name, type, vendor, status) for a single Auvik device by deviceId (required).',
+  description: 'GET /v1/inventory/device/info/{deviceId} — single device basic info.',
   inputSchema: {
     type: 'object',
-    properties: {
-      deviceId: { type: 'string', description: 'The Auvik device ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
+    properties: { deviceId: { type: 'string', description: 'Auvik device ID from a list call.' } },
     required: ['deviceId'],
     additionalProperties: false,
   },
@@ -42,222 +61,83 @@ export const devicesGetTool: Tool = {
 
 export const devicesGetDetailsTool: Tool = {
   name: 'auvik_devices_get_details',
-  description: 'Get extended detail (IP, MAC, location, management settings) for an Auvik device by deviceId (required). Use when basic info is insufficient.',
+  description: 'GET /v1/inventory/device/detail/{deviceId} — extended detail (discoveryStatus, manageStatus, traffic insights, connected devices).',
   inputSchema: {
     type: 'object',
-    properties: {
-      deviceId: { type: 'string', description: 'The Auvik device ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
+    properties: { deviceId: { type: 'string', description: 'Auvik device ID.' } },
     required: ['deviceId'],
     additionalProperties: false,
   },
 };
 
-export const devicesGetWarrantyTool: Tool = {
-  name: 'auvik_devices_get_warranty',
-  description: 'Get warranty expiry and support contract details for an Auvik device by deviceId (required). Use for lifecycle planning.',
+export const devicesListWarrantyTool: Tool = {
+  name: 'auvik_devices_list_warranty',
+  description: 'GET /v1/inventory/device/warranty — list device warranty records for a tenant. (No per-device endpoint; list and filter client-side.)',
   inputSchema: {
     type: 'object',
-    properties: {
-      deviceId: { type: 'string', description: 'The Auvik device ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
-    required: ['deviceId'],
+    properties: { ...tenantsProp, ...pageProps },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
-export const devicesGetLifecycleTool: Tool = {
-  name: 'auvik_devices_get_lifecycle',
-  description: 'Get end-of-life and end-of-support dates for an Auvik device by deviceId (required). Use when assessing hardware refresh needs.',
+export const devicesListLifecycleTool: Tool = {
+  name: 'auvik_devices_list_lifecycle',
+  description: 'GET /v1/inventory/device/lifecycle — list device end-of-life / end-of-support records for a tenant.',
   inputSchema: {
     type: 'object',
-    properties: {
-      deviceId: { type: 'string', description: 'The Auvik device ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
-    required: ['deviceId'],
+    properties: { ...tenantsProp, ...pageProps },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
-export async function handleDevicesList(args: any = {}): Promise<any> {
+export async function handleDevicesList(args: Record<string, unknown>) {
   try {
-    const parsedArgs = DevicesListSchema.parse(args);
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.devices.list(parsedArgs);
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik devices found for specified criteria' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCreds();
+    return ok(await createAuvikClient(c).devices.list(args));
+  } catch (e) {
+    return fail(e);
   }
 }
 
-export async function handleDevicesGet(args: { deviceId: string; tenants?: string }): Promise<any> {
+export async function handleDevicesGet(args: { deviceId: string }) {
   try {
-    const parsedArgs = DeviceGetSchema.parse(args);
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.devices.get(parsedArgs.deviceId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik device found with ID: ${parsedArgs.deviceId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCreds();
+    return ok(await createAuvikClient(c).devices.get(args.deviceId));
+  } catch (e) {
+    return fail(e);
   }
 }
 
-export async function handleDevicesGetDetails(args: { deviceId: string; tenants?: string }): Promise<any> {
+export async function handleDevicesGetDetails(args: { deviceId: string }) {
   try {
-    const parsedArgs = DeviceDetailsSchema.parse(args);
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.devices.getDetails(parsedArgs.deviceId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik device details found with ID: ${parsedArgs.deviceId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCreds();
+    return ok(await createAuvikClient(c).devices.getDetail(args.deviceId));
+  } catch (e) {
+    return fail(e);
   }
 }
 
-export async function handleDevicesGetWarranty(args: { deviceId: string; tenants?: string }): Promise<any> {
+export async function handleDevicesListWarranty(args: Record<string, unknown>) {
   try {
-    const parsedArgs = DeviceWarrantySchema.parse(args);
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.devices.getWarranty(parsedArgs.deviceId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik device warranty found with ID: ${parsedArgs.deviceId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCreds();
+    return ok(await createAuvikClient(c).devices.listWarranty(args));
+  } catch (e) {
+    return fail(e);
   }
 }
 
-export async function handleDevicesGetLifecycle(args: { deviceId: string; tenants?: string }): Promise<any> {
+export async function handleDevicesListLifecycle(args: Record<string, unknown>) {
   try {
-    const parsedArgs = DeviceLifecycleSchema.parse(args);
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.devices.getLifecycle(parsedArgs.deviceId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik device lifecycle found with ID: ${parsedArgs.deviceId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
+    const c = getCredentials();
+    if (!c) return noCreds();
+    return ok(await createAuvikClient(c).devices.listLifecycle(args));
+  } catch (e) {
+    return fail(e);
   }
 }

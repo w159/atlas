@@ -3,102 +3,60 @@ import { getCredentials } from '../credentials.js';
 import { createAuvikClient } from '../client-factory.js';
 import { toMcpError } from '../errors.js';
 
+const noCreds = () => ({ content: [{ type: 'text' as const, text: 'No Auvik credentials configured.' }], isError: true });
+const ok = (r: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(r, null, 2) }] });
+const fail = (e: unknown) => { const m = toMcpError(e); return { content: [{ type: 'text' as const, text: m.message }], isError: true }; };
+
 export const networksListTool: Tool = {
   name: 'auvik_networks_list',
-  description: 'List networks discovered by Auvik; filter by type or modification date. Returns network IDs for further inspection.',
+  description: 'GET /v1/inventory/network/info — list networks (VLANs/subnets) per tenant.',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number (optional)' },
-      pageSize: { type: 'number', description: 'Number of items per page (1-1000, optional)' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-      filter_networkType: { type: 'string', description: 'Filter by network type (optional)' },
-      filter_modifiedAfter: { type: 'string', description: 'Filter networks modified after this date (ISO 8601, optional)' },
+      tenants: { type: 'string', description: 'Comma-separated tenant IDs (required).' },
+      pageSize: { type: 'number', description: 'page[first].' },
+      pageAfter: { type: 'string', description: 'page[after] cursor.' },
+      filter_networkType: { type: 'string', description: 'filter[networkType], e.g. "vlan".' },
+      filter_modifiedAfter: { type: 'string', description: 'filter[modifiedAfter] ISO 8601.' },
+      filter_scanStatus: { type: 'string', description: 'filter[scanStatus].' },
     },
+    required: ['tenants'],
     additionalProperties: false,
   },
 };
 
 export const networksGetTool: Tool = {
   name: 'auvik_networks_get',
-  description: 'Get topology and configuration details for a single Auvik network by networkId (required).',
+  description: 'GET /v1/inventory/network/info/{networkId} — single network basic info.',
   inputSchema: {
     type: 'object',
-    properties: {
-      networkId: { type: 'string', description: 'The Auvik network ID' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-    },
+    properties: { networkId: { type: 'string', description: 'Auvik network ID.' } },
     required: ['networkId'],
     additionalProperties: false,
   },
 };
 
-export async function handleNetworksList(args: any = {}): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
+export const networksListDetailTool: Tool = {
+  name: 'auvik_networks_list_detail',
+  description: 'GET /v1/inventory/network/detail — list network detail records (scope, collectors).',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      tenants: { type: 'string', description: 'Comma-separated tenant IDs (required).' },
+      pageSize: { type: 'number' },
+      pageAfter: { type: 'string' },
+    },
+    required: ['tenants'],
+    additionalProperties: false,
+  },
+};
 
-    const client = createAuvikClient(credentials);
-    const response = await client.networks.list(args);
-
-    if (!response.data || response.data.length === 0) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik networks found for specified criteria' }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleNetworksList(args: Record<string, unknown>) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).networks.list(args)); } catch (e) { return fail(e); }
 }
-
-export async function handleNetworksGet(args: { networkId: string; tenants?: string }): Promise<any> {
-  try {
-    const credentials = getCredentials();
-    if (!credentials) {
-      return {
-        content: [{ type: 'text' as const, text: 'No Auvik credentials configured' }],
-        isError: true,
-      };
-    }
-
-    const client = createAuvikClient(credentials);
-    const response = await client.networks.get(args.networkId);
-
-    if (!response.data) {
-      return {
-        content: [{ type: 'text' as const, text: `No Auvik network found with ID: ${args.networkId}` }],
-        isError: true,
-      };
-    }
-
-    return {
-      content: [{
-        type: 'text' as const,
-        text: JSON.stringify(response, null, 2),
-      }],
-    };
-  } catch (error) {
-    const mcpError = toMcpError(error);
-    return {
-      content: [{ type: 'text' as const, text: mcpError.message }],
-      isError: true,
-    };
-  }
+export async function handleNetworksGet(args: { networkId: string }) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).networks.get(args.networkId)); } catch (e) { return fail(e); }
+}
+export async function handleNetworksListDetail(args: Record<string, unknown>) {
+  try { const c = getCredentials(); if (!c) return noCreds(); return ok(await createAuvikClient(c).networks.listDetail(args)); } catch (e) { return fail(e); }
 }

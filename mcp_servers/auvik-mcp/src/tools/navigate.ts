@@ -1,34 +1,31 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { getCredentials } from '../credentials.js';
+import { createAuvikClient } from '../client-factory.js';
+import { toMcpError } from '../errors.js';
 
 export const navigateTool: Tool = {
   name: 'auvik_navigate',
-  description: 'Return quick-access URLs to the Auvik dashboard, devices, networks, alerts, reports, API docs, and status pages. Use when a user asks for a link to Auvik.',
+  description: 'Follow a JSON:API links.next (or links.first/prev) absolute URL returned by a prior Auvik list call. Use this to paginate without re-encoding bracket params.',
   inputSchema: {
     type: 'object',
-    properties: {},
+    properties: {
+      url: { type: 'string', description: 'Absolute URL from a prior response (links.next / links.first / links.prev). Must be on auvikapi.<region>.my.auvik.com/v1/.' },
+    },
+    required: ['url'],
     additionalProperties: false,
   },
 };
 
-export async function handleNavigate(): Promise<any> {
-  const links = {
-    dashboard: 'https://dashboard.auvik.com/',
-    devices: 'https://dashboard.auvik.com/devices',
-    networks: 'https://dashboard.auvik.com/networks',
-    alerts: 'https://dashboard.auvik.com/alerts',
-    reports: 'https://dashboard.auvik.com/reports',
-    api_docs: 'https://api.auvik.com/documentation',
-    help: 'https://support.auvik.com/',
-    status: 'https://status.auvik.com/',
-  };
-
-  return {
-    content: [{
-      type: 'text' as const,
-      text: JSON.stringify({
-        message: 'Auvik navigation links',
-        links,
-      }, null, 2),
-    }],
-  };
+export async function handleNavigate(args: { url: string }) {
+  try {
+    const c = getCredentials();
+    if (!c) {
+      return { content: [{ type: 'text' as const, text: 'No Auvik credentials configured.' }], isError: true };
+    }
+    const resp = await createAuvikClient(c).followUrl(args.url);
+    return { content: [{ type: 'text' as const, text: JSON.stringify(resp, null, 2) }] };
+  } catch (e) {
+    const m = toMcpError(e);
+    return { content: [{ type: 'text' as const, text: m.message }], isError: true };
+  }
 }

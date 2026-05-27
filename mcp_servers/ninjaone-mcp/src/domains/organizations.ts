@@ -17,27 +17,30 @@ function getTools(): Tool[] {
     {
       name: "ninjaone_organizations_list",
       description:
-        "List organizations (customer accounts)",
+        "List NinjaOne customer organizations (accounts). Returns organization IDs needed to scope device and alert queries.",
       inputSchema: {
         type: "object" as const,
         properties: {
           limit: {
             type: "number",
+            description: "Page size — maximum organizations to return in one call (default: 50).",
           },
           cursor: {
             type: "string",
+            description: "Opaque pagination cursor from the previous page response.",
           },
         },
       },
     },
     {
       name: "ninjaone_organizations_get",
-      description: "Get organization details by ID",
+      description: "Get details of a NinjaOne organization by organization_id (required). Returns name, description, node role, and policy assignment.",
       inputSchema: {
         type: "object" as const,
         properties: {
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID.",
           },
         },
         required: ["organization_id"],
@@ -45,23 +48,26 @@ function getTools(): Tool[] {
     },
     {
       name: "ninjaone_organizations_create",
-      description: "Create new organization",
+      description: "Create a new NinjaOne customer organization (name required). Use when onboarding a new client to the RMM.",
       inputSchema: {
         type: "object" as const,
         properties: {
           name: {
             type: "string",
+            description: "Display name for the new organization (customer account).",
           },
           description: {
             type: "string",
+            description: "Optional free-text description of the organization.",
           },
           node_approval_mode: {
             type: "string",
             enum: ["AUTOMATIC", "MANUAL", "REJECT"],
-            description: "How to handle new device registrations",
+            description: "How to handle new device registrations: AUTOMATIC approves all, MANUAL queues for review, REJECT denies.",
           },
           policy_id: {
             type: "number",
+            description: "Integer ID of the NinjaOne policy to apply to this organization by default.",
           },
         },
         required: ["name"],
@@ -69,12 +75,13 @@ function getTools(): Tool[] {
     },
     {
       name: "ninjaone_organizations_locations",
-      description: "List organization locations",
+      description: "List physical locations configured for a NinjaOne organization (organization_id required). Returns location names, addresses, and IDs. Use to scope device queries by location.",
       inputSchema: {
         type: "object" as const,
         properties: {
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID (required). Use ninjaone_organizations_list to get IDs.",
           },
         },
         required: ["organization_id"],
@@ -82,19 +89,22 @@ function getTools(): Tool[] {
     },
     {
       name: "ninjaone_organizations_devices",
-      description: "List organization devices",
+      description: "List devices enrolled under a specific NinjaOne organization (organization_id required); optionally filter by device_class. Returns device IDs and hostnames.",
       inputSchema: {
         type: "object" as const,
         properties: {
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID; required to scope results to one customer.",
           },
           device_class: {
             type: "string",
             enum: ["WINDOWS_WORKSTATION", "WINDOWS_SERVER", "MAC", "LINUX", "VMWARE_VM"],
+            description: "Filter by device operating system class.",
           },
           limit: {
             type: "number",
+            description: "Page size — maximum devices to return in one call (default: 50).",
           },
         },
         required: ["organization_id"],

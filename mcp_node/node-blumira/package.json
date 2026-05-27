@@ -1,7 +1,7 @@
 {
   "name": "node-blumira",
   "version": "1.0.1",
-  "description": "Node.js client library for the Blumira SIEM API",
+  "description": "Typed Node.js client for the Blumira SIEM API; used by blumira-mcp.",
   "type": "module",
   "files": [
     "dist"
@@ -40,6 +40,15 @@
   ],
   "author": "w159",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w159/ai-tech-toolkit.git",
+    "directory": "mcp_node/node-blumira"
+  },
+  "bugs": {
+    "url": "https://github.com/w159/ai-tech-toolkit/issues"
+  },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-blumira",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",

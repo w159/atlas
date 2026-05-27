@@ -33,7 +33,7 @@ export async function getClient(): Promise<any> {
     throw new Error(
       'No ThreatLocker API credentials configured. Set THREATLOCKER_API_KEY (required). ' +
         'Optionally set THREATLOCKER_ORGANIZATION_ID for managed-org scope and ' +
-        'THREATLOCKER_BASE_URL for non-default shards (e.g. https://portalapi.g.us.threatlocker.com/portalapi).'
+        'THREATLOCKER_BASE_URL for non-default shards (e.g. https://portalapi.eu.threatlocker.com/portalapi).'
     );
   }
 

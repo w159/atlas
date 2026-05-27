@@ -38,7 +38,7 @@ export function getNavigationTools(): Tool[] {
     },
     {
       name: 'threatlocker_status',
-      description: 'Show credentials status and available domains',
+      description: 'Show ThreatLocker MCP server configuration status: credential presence, API URL, and available tool domains. Use to verify setup before calling other tools.',
       inputSchema: { type: 'object' as const, properties: {} },
     },
   ];

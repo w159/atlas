@@ -5,7 +5,7 @@ import { CwManageClient } from "../api-client.js";
 export function registerMemberTools(server: McpServer, client: CwManageClient) {
   server.tool(
     "cw_search_members",
-    "Search members (technicians/users) in ConnectWise Manage.",
+    "Search ConnectWise Manage members (technicians/users); filter with CW conditions (e.g. \"identifier = 'jsmith'\"). Returns member IDs needed for time-entry and activity tools.",
     {
       conditions: z.string().optional().describe("ConnectWise conditions query string (e.g. \"identifier = 'jsmith'\")"),
       page: z.number().optional().describe("Page number (default: 1)"),
@@ -25,7 +25,7 @@ export function registerMemberTools(server: McpServer, client: CwManageClient) {
 
   server.tool(
     "cw_get_member",
-    "Get a specific member by ID.",
+    "Get a ConnectWise Manage member (technician/user) by ID (required). Returns identifier, name, role, work schedule, and license type.",
     {
       id: z.number().describe("Member ID"),
     },

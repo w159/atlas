@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const alertsListTool: Tool = {
   name: 'auvik_alerts_list',
-  description: 'List alerts from Auvik monitoring',
+  description: 'List Auvik monitoring alerts; filter by status (created/acknowledged/resolved) or severity. Call this to see active or historical alerts across tenants.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -21,7 +21,7 @@ export const alertsListTool: Tool = {
 
 export const alertsGetTool: Tool = {
   name: 'auvik_alerts_get',
-  description: 'Get details about a specific alert',
+  description: 'Get full details of a single Auvik alert by alertId (required). Use after listing alerts to inspect severity, device, and message.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -35,7 +35,7 @@ export const alertsGetTool: Tool = {
 
 export const alertsDismissTool: Tool = {
   name: 'auvik_alerts_dismiss',
-  description: 'Dismiss/acknowledge an alert',
+  description: 'Dismiss (acknowledge) an Auvik alert by alertId (required). Use to suppress a resolved or acknowledged alert from the active queue.',
   inputSchema: {
     type: 'object',
     properties: {

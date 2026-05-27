@@ -83,18 +83,17 @@ export function createMcpServer(): Server {
             (args || {}) as Record<string, unknown>,
             extra
           );
-        } catch (error) {
-          logger.error('Tool call failed', {
-            tool: name,
-            error: (error as Error).message,
-          });
+        } catch (error: any) {
+          const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+          const hint = status === 401 || status === 403
+            ? 'Verify PAYLOCITY_CLIENT_ID and PAYLOCITY_CLIENT_SECRET are correct.'
+            : status === 404
+            ? 'Resource not found. Verify the companyId and resource IDs are correct.'
+            : 'Check that PAYLOCITY_CLIENT_ID, PAYLOCITY_CLIENT_SECRET, and PAYLOCITY_COMPANY_ID are set.';
+          const msg = `Paylocity API error${status ? ` (HTTP ${status})` : ''}: ${(error as Error).message}. ${hint}`;
+          logger.error('Tool call failed', { tool: name, error: msg });
           return {
-            content: [
-              {
-                type: 'text' as const,
-                text: `Error: ${(error as Error).message}`,
-              },
-            ],
+            content: [{ type: 'text' as const, text: msg }],
             isError: true,
           };
         }

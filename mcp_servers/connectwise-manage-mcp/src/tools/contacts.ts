@@ -25,7 +25,7 @@ export function registerContactTools(server: McpServer, client: CwManageClient) 
 
   server.tool(
     "cw_get_contact",
-    "Get a specific contact by ID.",
+    "Get a ConnectWise Manage contact by ID (required). Returns name, email, phone, company association, and title.",
     {
       id: z.number().describe("Contact ID"),
     },
@@ -37,7 +37,7 @@ export function registerContactTools(server: McpServer, client: CwManageClient) 
 
   server.tool(
     "cw_create_contact",
-    "Create a new contact.",
+    "Create a new ConnectWise Manage contact (firstName, lastName, and companyId required). Optionally add email, phone, and title.",
     {
       firstName: z.string().describe("First name"),
       lastName: z.string().describe("Last name"),

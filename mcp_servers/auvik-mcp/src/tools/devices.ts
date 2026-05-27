@@ -6,20 +6,20 @@ import { DevicesListSchema, DeviceGetSchema, DeviceDetailsSchema, DeviceWarranty
 
 export const devicesListTool: Tool = {
   name: 'auvik_devices_list',
-  description: 'List network devices managed by Auvik',
+  description: 'List Auvik-managed network devices; filter by type, vendor, online status, or modification date. Returns device IDs needed for other device tools.',
   inputSchema: {
     type: 'object',
     properties: {
-      page: { type: 'number', description: 'Page number (optional)' },
-      pageSize: { type: 'number', description: 'Number of items per page (1-1000, optional)' },
-      tenants: { type: 'string', description: 'Comma-separated tenant IDs (optional)' },
-      filter_deviceType: { type: 'string', description: 'Filter by device type (optional)' },
-      filter_modifiedAfter: { type: 'string', description: 'Filter devices modified after this date (ISO 8601, optional)' },
-      filter_vendorName: { type: 'string', description: 'Filter by vendor name (optional)' },
+      page: { type: 'number', description: 'Page number for pagination (default: 1).' },
+      pageSize: { type: 'number', description: 'Page size — items per page (integer 1-1000).' },
+      tenants: { type: 'string', description: 'Comma-separated Auvik tenant IDs to scope the query.' },
+      filter_deviceType: { type: 'string', description: 'Filter by Auvik device type string, e.g. "switch", "router", "firewall".' },
+      filter_modifiedAfter: { type: 'string', description: 'ISO 8601 datetime — return only devices modified after this time, e.g. 2024-01-01T00:00:00Z.' },
+      filter_vendorName: { type: 'string', description: 'Filter by hardware vendor name, e.g. "Cisco", "HP".' },
       filter_onlineStatus: {
         type: 'string',
         enum: ['online', 'offline', 'unreachable', 'testing', 'unknown', 'dormant', 'notPresent', 'lowerLayerDown'],
-        description: 'Filter by online status (optional)'
+        description: 'Filter by current device online status.'
       },
     },
     additionalProperties: false,
@@ -28,7 +28,7 @@ export const devicesListTool: Tool = {
 
 export const devicesGetTool: Tool = {
   name: 'auvik_devices_get',
-  description: 'Get basic information about a specific device',
+  description: 'Get basic info (name, type, vendor, status) for a single Auvik device by deviceId (required).',
   inputSchema: {
     type: 'object',
     properties: {
@@ -42,7 +42,7 @@ export const devicesGetTool: Tool = {
 
 export const devicesGetDetailsTool: Tool = {
   name: 'auvik_devices_get_details',
-  description: 'Get detailed information about a specific device',
+  description: 'Get extended detail (IP, MAC, location, management settings) for an Auvik device by deviceId (required). Use when basic info is insufficient.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -56,7 +56,7 @@ export const devicesGetDetailsTool: Tool = {
 
 export const devicesGetWarrantyTool: Tool = {
   name: 'auvik_devices_get_warranty',
-  description: 'Get warranty information for a specific device',
+  description: 'Get warranty expiry and support contract details for an Auvik device by deviceId (required). Use for lifecycle planning.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -70,7 +70,7 @@ export const devicesGetWarrantyTool: Tool = {
 
 export const devicesGetLifecycleTool: Tool = {
   name: 'auvik_devices_get_lifecycle',
-  description: 'Get lifecycle information for a specific device',
+  description: 'Get end-of-life and end-of-support dates for an Auvik device by deviceId (required). Use when assessing hardware refresh needs.',
   inputSchema: {
     type: 'object',
     properties: {

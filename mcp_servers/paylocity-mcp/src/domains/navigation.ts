@@ -56,7 +56,7 @@ export function getNavigationTools(): Tool[] {
     {
       name: 'paylocity_status',
       description:
-        'Show credentials status, base URL, default companyId, and available domains.',
+        'Show Paylocity credentials status, base URL, default companyId, and available domains. Use to verify connectivity before calling other tools.',
       inputSchema: { type: 'object' as const, properties: {} },
     },
   ];

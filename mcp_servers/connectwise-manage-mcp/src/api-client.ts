@@ -5,7 +5,9 @@
  * and self-signed certificate support for both cloud and self-hosted instances.
  *
  * Environment variables:
- *   CW_MANAGE_URL              - API base URL (e.g. https://api-na.myconnectwise.net)
+ *   CW_MANAGE_BASE_URL         - API base URL (e.g. https://api-na.myconnectwise.net). Optional;
+ *                                defaults to https://api-na.myconnectwise.net. CW_MANAGE_URL is
+ *                                also accepted for backwards compatibility.
  *   CW_MANAGE_COMPANY_ID       - Company identifier
  *   CW_MANAGE_PUBLIC_KEY        - API member public key
  *   CW_MANAGE_PRIVATE_KEY       - API member private key
@@ -32,9 +34,16 @@ export function getConfig(): CwManageConfig | null {
   }
 
   // Default to North America cloud. Override for EU, AU, or self-hosted.
-  const baseUrl = (
-    process.env.CW_MANAGE_URL || "https://api-na.myconnectwise.net"
+  // Accept CW_MANAGE_BASE_URL (canonical name) or CW_MANAGE_URL (legacy alias).
+  // Normalize: if the value looks like a hostname without a scheme, prepend https://.
+  const rawUrl = (
+    process.env.CW_MANAGE_BASE_URL ||
+    process.env.CW_MANAGE_URL ||
+    "https://api-na.myconnectwise.net"
   ).replace(/\/+$/, "");
+  const baseUrl = rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
+    ? rawUrl
+    : `https://${rawUrl}`;
 
   return { baseUrl, companyId, publicKey, privateKey, clientId };
 }

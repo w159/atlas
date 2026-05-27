@@ -34,7 +34,7 @@ export function registerTicketTools(server: McpServer, client: CwManageClient) {
 
   server.tool(
     "cw_get_ticket",
-    "Get a specific service ticket by ID.",
+    "Get a ConnectWise Manage service ticket by ID (required). Returns status, summary, company, contact, board, priority, and time budget.",
     {
       id: z.number().describe("Ticket ID"),
     },
@@ -46,7 +46,7 @@ export function registerTicketTools(server: McpServer, client: CwManageClient) {
 
   server.tool(
     "cw_create_ticket",
-    "Create a new service ticket.",
+    "Create a new ConnectWise Manage service ticket (summary required). Optionally associate with boardId, companyId, contactId, statusId, priorityId, typeId, subTypeId, and provide an initialDescription.",
     {
       summary: z.string().describe("Ticket summary/title"),
       boardId: z.number().optional().describe("Service board ID"),
@@ -76,7 +76,7 @@ export function registerTicketTools(server: McpServer, client: CwManageClient) {
 
   server.tool(
     "cw_update_ticket",
-    "Update an existing service ticket using JSON Patch operations.",
+    "Update a ConnectWise Manage service ticket (id required) via JSON Patch operations. Each operation needs op (replace/add/remove), path (e.g. 'status/id', 'summary'), and value.",
     {
       id: z.number().describe("Ticket ID"),
       operations: z

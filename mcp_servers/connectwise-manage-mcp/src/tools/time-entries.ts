@@ -5,7 +5,7 @@ import { CwManageClient } from "../api-client.js";
 export function registerTimeEntryTools(server: McpServer, client: CwManageClient) {
   server.tool(
     "cw_search_time_entries",
-    "Search time entries in ConnectWise Manage.",
+    "Search ConnectWise Manage time entries; use CW conditions to filter (e.g. \"member/identifier = 'jsmith'\"). Returns hours, charge targets, and notes.",
     {
       conditions: z.string().optional().describe("ConnectWise conditions query string (e.g. \"member/identifier = 'jsmith'\")"),
       page: z.number().optional().describe("Page number (default: 1)"),
@@ -25,7 +25,7 @@ export function registerTimeEntryTools(server: McpServer, client: CwManageClient
 
   server.tool(
     "cw_get_time_entry",
-    "Get a specific time entry by ID.",
+    "Get a ConnectWise Manage time entry by ID (required). Returns member, charge target, hours, start/end times, and work notes.",
     {
       id: z.number().describe("Time entry ID"),
     },
@@ -37,7 +37,7 @@ export function registerTimeEntryTools(server: McpServer, client: CwManageClient
 
   server.tool(
     "cw_create_time_entry",
-    "Create a new time entry.",
+    "Create a ConnectWise Manage time entry (chargeToType, chargeToId, memberId, timeStart all required). Optionally provide timeEnd or actualHours, notes, workTypeId, and workRoleId.",
     {
       chargeToType: z.enum(["ServiceTicket", "ProjectTicket", "ChargeCode", "Activity"]).describe("What to charge the time to"),
       chargeToId: z.number().describe("ID of the ticket, charge code, or activity"),

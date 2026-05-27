@@ -113,7 +113,7 @@ const navigateTool: Tool = {
 const statusTool: Tool = {
   name: "ninjaone_status",
   description:
-    "Show API credential status and available tool domains",
+    "Show NinjaOne MCP server configuration status: credential presence, configured region, and available tool domains. Use to verify setup before calling other tools.",
   inputSchema: {
     type: "object",
     properties: {},
@@ -250,12 +250,19 @@ async function createMcpServer(credentialOverrides?: NinjaOneCredentials): Promi
         ],
         isError: true,
       };
-    } catch (error) {
+    } catch (error: any) {
       const message = error instanceof Error ? error.message : String(error);
       const stack = error instanceof Error ? error.stack : undefined;
-      logger.error("Tool call failed", { tool: name, error: message, stack });
+      const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+      const hint = status === 401 || status === 403
+        ? 'Verify NINJAONE_CLIENT_ID, NINJAONE_CLIENT_SECRET, and NINJAONE_REGION are correct.'
+        : status === 429
+        ? 'NinjaOne API rate limit hit. Wait before retrying.'
+        : 'Check that NINJAONE_CLIENT_ID and NINJAONE_CLIENT_SECRET are set. Verify NINJAONE_REGION (us, eu, oc, ca, us2, fed).';
+      const msg = `NinjaOne API error${status ? ` (HTTP ${status})` : ''}: ${message}. ${hint}`;
+      logger.error("Tool call failed", { tool: name, error: msg, stack });
       return {
-        content: [{ type: "text", text: `Error: ${message}` }],
+        content: [{ type: "text", text: msg }],
         isError: true,
       };
     } finally {

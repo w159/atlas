@@ -3,13 +3,17 @@
   "name": "vanta-mcp",
   "version": "0.1.0",
   "display_name": "Vanta MCP Server",
-  "description": "MCP server for Vanta REST API — access frameworks, controls, tests, evidence documents, vendors, vulnerabilities, policies, people, and integrations through AI assistants.",
+  "description": "Query Vanta GRC compliance data — frameworks, controls, tests, evidence, vendors, vulnerabilities, and policies — for compliance AI agents.",
   "long_description": "Provides AI assistants with structured access to your Vanta GRC data. Browse frameworks (SOC 2, ISO 27001, HIPAA, etc.), inspect controls and test results, hunt evidence-document gaps, review vendor risk, triage vulnerabilities, and pull integration resource inventories. OAuth2 client_credentials auth with proactive token refresh and cursor-based pagination.",
   "author": {
     "name": "w159",
     "url": "https://github.com/w159"
   },
-  "homepage": "https://developer.vanta.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w159/ai-tech-toolkit"
+  },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/vanta-mcp",
   "license": "Apache-2.0",
   "keywords": ["vanta", "compliance", "grc", "soc2", "iso27001", "audit", "evidence"],
   "server": {
@@ -45,7 +49,7 @@
     "vanta_base_url": {
       "type": "string",
       "title": "Vanta API base URL (optional)",
-      "description": "Optional. Defaults to https://api.vanta.com/v1. Only set this if Vanta has moved you to a non-default shard.",
+      "description": "Optional. Leave blank to use the vendor default (https://api.vanta.com/v1). Only set for staging/sovereign shards.",
       "required": false
     }
   },

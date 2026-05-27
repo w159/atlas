@@ -5,7 +5,7 @@ import { CwManageClient } from "../api-client.js";
 export function registerActivityTools(server: McpServer, client: CwManageClient) {
   server.tool(
     "cw_search_activities",
-    "Search schedule activities in ConnectWise Manage.",
+    "Search sales/schedule activities in ConnectWise Manage; use CW conditions to filter (e.g. \"assignTo/identifier = 'jsmith'\"). Returns activity IDs, names, and assigned members.",
     {
       conditions: z.string().optional().describe("ConnectWise conditions query string"),
       page: z.number().optional().describe("Page number (default: 1)"),
@@ -25,7 +25,7 @@ export function registerActivityTools(server: McpServer, client: CwManageClient)
 
   server.tool(
     "cw_get_activity",
-    "Get a specific activity by ID.",
+    "Get a ConnectWise Manage sales activity by ID (required). Returns type, assigned member, company, contact, and scheduled dates.",
     {
       id: z.number().describe("Activity ID"),
     },
@@ -37,7 +37,7 @@ export function registerActivityTools(server: McpServer, client: CwManageClient)
 
   server.tool(
     "cw_create_activity",
-    "Create a new activity.",
+    "Create a ConnectWise Manage sales activity (name required). Optionally associate with typeId, companyId, contactId, memberId, and schedule via dateStart/dateEnd (ISO 8601).",
     {
       name: z.string().describe("Activity name/subject"),
       typeId: z.number().optional().describe("Activity type ID"),

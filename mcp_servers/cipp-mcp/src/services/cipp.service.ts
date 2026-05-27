@@ -164,8 +164,7 @@ export class CippService {
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       this.logger.error('CIPP API network error', { method, url: url.toString(), error: message });
-      throw new McpError(
-        ErrorCode.InternalError,
+      throw new Error(
         `Network error communicating with CIPP API (${method} ${url.toString()}): ${message}`
       );
     }
@@ -183,10 +182,11 @@ export class CippService {
         status: response.status,
         body: responseBody,
       });
-      throw new McpError(
-        ErrorCode.InternalError,
+      const httpErr: Error & { statusCode?: number } = new Error(
         `CIPP API returned HTTP ${response.status} for ${method} ${url.toString()}: ${responseBody}`
       );
+      httpErr.statusCode = response.status;
+      throw httpErr;
     }
 
     const text = await response.text();
@@ -200,8 +200,7 @@ export class CippService {
       return JSON.parse(text) as T;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      throw new McpError(
-        ErrorCode.InternalError,
+      throw new Error(
         `Failed to parse CIPP API response as JSON (${method} ${url.toString()}): ${message}`
       );
     }

@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const entitiesListNotesTool: Tool = {
   name: 'auvik_entities_list_notes',
-  description: 'List notes attached to Auvik entities',
+  description: 'List notes attached to Auvik entities (devices, networks, etc.); filter by entityId. Use to retrieve operator comments added in Auvik.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -20,7 +20,7 @@ export const entitiesListNotesTool: Tool = {
 
 export const entitiesListAuditsTool: Tool = {
   name: 'auvik_entities_list_audits',
-  description: 'List audit logs for Auvik entities',
+  description: 'List audit log entries for Auvik entities; filter by entityId. Use to trace configuration changes or user actions on a device or network.',
   inputSchema: {
     type: 'object',
     properties: {

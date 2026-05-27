@@ -7,19 +7,19 @@ function getTools(): Tool[] {
   return [
     {
       name: 'threatlocker_organizations_list_children',
-      description: 'List child organizations with optional filters.',
+      description: 'List ThreatLocker child (managed) organizations; optionally filter by searchText. Returns organization IDs needed to scope the managedOrganizationId header for child-org operations.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          searchText: { type: 'string', description: 'Search text filter' },
-          pageNumber: { type: 'number', description: 'Page number (default 1)' },
-          pageSize: { type: 'number', description: 'Page size (default 50)' },
+          searchText: { type: 'string', description: 'Free-text search applied to organization name.' },
+          pageNumber: { type: 'number', description: 'Page number for pagination (default: 1).' },
+          pageSize: { type: 'number', description: 'Page size — records per page (default: 50).' },
         },
       },
     },
     {
       name: 'threatlocker_organizations_get_auth_key',
-      description: 'Get the organization auth key.',
+      description: 'Get the ThreatLocker organization auth key for the current org. Used when deploying new ThreatLocker agents to enroll computers.',
       inputSchema: {
         type: 'object' as const,
         properties: {},
@@ -27,7 +27,7 @@ function getTools(): Tool[] {
     },
     {
       name: 'threatlocker_organizations_for_move_computers',
-      description: 'Get organizations available for moving computers.',
+      description: 'Get ThreatLocker organizations available as move destinations for computers. Use before reassigning a computer to a different managed organization.',
       inputSchema: {
         type: 'object' as const,
         properties: {},

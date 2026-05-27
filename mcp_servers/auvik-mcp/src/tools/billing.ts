@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const billingClientUsageTool: Tool = {
   name: 'auvik_billing_client_usage',
-  description: 'Get client billing usage information',
+  description: 'Get per-client Auvik billing usage for a date range (fromTime and thruTime required, ISO 8601). Use for MSP billing reconciliation.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -20,7 +20,7 @@ export const billingClientUsageTool: Tool = {
 
 export const billingDeviceUsageTool: Tool = {
   name: 'auvik_billing_device_usage',
-  description: 'Get device billing usage information',
+  description: 'Get per-device Auvik billing usage for a date range (fromTime and thruTime required, ISO 8601). Use to audit billed device counts.',
   inputSchema: {
     type: 'object',
     properties: {

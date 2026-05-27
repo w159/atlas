@@ -3,17 +3,17 @@
   "name": "cipp-mcp",
   "version": "0.1.0",
   "display_name": "CIPP MCP Server",
-  "description": "MCP server for CIPP — M365 multi-tenant management, users, security, conditional access, and standards for MSPs",
-  "long_description": "Provides AI assistants with structured access to CIPP (CyberDrain Improved Partner Portal). Manage Microsoft 365 tenants, users, groups, security policies, conditional access, email configurations, and compliance standards across your entire MSP client base through the Model Context Protocol.",
+  "description": "Manage M365 tenants, users, security policies, and standards via CIPP (CyberDrain Improved Partner Portal) — for MSP AI agents.",
+  "long_description": "Use this server when you need to automate Microsoft 365 management tasks across multiple MSP client tenants through CIPP. Covers user lifecycle (create, edit, reset passwords, MFA, licenses), group management, mailbox and shared-mailbox operations, conditional access policies, Defender and Entra security standards, compliance baselines, and CIPP alert/audit workflows. Supports both static Bearer token and OAuth client-credentials authentication. Call tools to query or act on any tenant accessible from your CIPP deployment.",
   "author": {
     "name": "Aaron Sachs",
     "url": "https://github.com/asachs01"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w159/cipp-mcp"
+    "url": "https://github.com/w159/ai-tech-toolkit"
   },
-  "homepage": "https://github.com/w159/cipp-mcp",
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/cipp-mcp",
   "license": "Apache-2.0",
   "keywords": ["cipp", "m365", "microsoft365", "msp", "multi-tenant", "azure"],
   "server": {

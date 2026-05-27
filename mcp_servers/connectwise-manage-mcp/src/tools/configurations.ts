@@ -5,7 +5,7 @@ import { CwManageClient } from "../api-client.js";
 export function registerConfigurationTools(server: McpServer, client: CwManageClient) {
   server.tool(
     "cw_search_configurations",
-    "Search configuration items (assets/CIs) in ConnectWise Manage.",
+    "Search ConnectWise Manage configuration items (assets/CIs); use CW conditions to filter by company, type, or status (e.g. \"company/name = 'Acme'\"). Returns CI IDs and names.",
     {
       conditions: z.string().optional().describe("ConnectWise conditions query string (e.g. \"company/name = 'Acme'\")"),
       page: z.number().optional().describe("Page number (default: 1)"),
@@ -25,7 +25,7 @@ export function registerConfigurationTools(server: McpServer, client: CwManageCl
 
   server.tool(
     "cw_get_configuration",
-    "Get a specific configuration item (asset/CI) by ID.",
+    "Get a ConnectWise Manage configuration item (asset/CI) by ID (required). Returns type, company, serial number, and custom field values.",
     {
       id: z.number().describe("Configuration item ID"),
     },

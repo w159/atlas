@@ -6,10 +6,10 @@ import { jsonResult, errorResult, listTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_integrations_list', 'List connected integrations (AWS, Okta, GitHub, etc.).'),
+    listTool('vanta_integrations_list', 'List Vanta connected integrations (AWS, Okta, GitHub, etc.) with sync status. Use to find a connectionId before calling resource or resource-kind tools.'),
     {
       name: 'vanta_integrations_get',
-      description: 'Get a single integration by connectionId.',
+      description: 'Get a single Vanta integration by connectionId (required). Returns sync status, last sync timestamp, and configuration details.',
       inputSchema: {
         type: 'object' as const,
         properties: { connectionId: { type: 'string' } },
@@ -18,7 +18,7 @@ function getTools(): Tool[] {
     },
     {
       name: 'vanta_integrations_list_resource_kinds',
-      description: 'List the resource kinds an integration exposes (e.g. ec2_instance, s3_bucket).',
+      description: 'List resource kinds exposed by a Vanta integration (e.g. ec2_instance, s3_bucket) by connectionId (required). Use to discover what resource types can be queried before calling vanta_integrations_list_resources.',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -31,7 +31,7 @@ function getTools(): Tool[] {
     },
     {
       name: 'vanta_integrations_list_resources',
-      description: 'List resources of a specific kind under an integration.',
+      description: 'List Vanta integration resources of a specific kind; requires connectionId and resourceKind (both required). Use to enumerate cloud resources (e.g. all EC2 instances or S3 buckets) inventoried by the integration.',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -45,7 +45,7 @@ function getTools(): Tool[] {
     },
     {
       name: 'vanta_integrations_get_resource',
-      description: 'Get a single integration resource by ID.',
+      description: 'Get a single Vanta integration resource by resourceId (required). Returns resource attributes, compliance findings, and linked controls.',
       inputSchema: {
         type: 'object' as const,
         properties: { resourceId: { type: 'string' } },

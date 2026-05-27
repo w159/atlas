@@ -67,10 +67,17 @@ export function createMcpServer(): Server {
       if (toolNames.includes(name)) {
         try {
           return await handler.handleCall(name, (args || {}) as Record<string, unknown>, extra);
-        } catch (error) {
-          logger.error('Tool call failed', { tool: name, error: (error as Error).message });
+        } catch (error: any) {
+          const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+          const hint = status === 401 || status === 403
+            ? 'Verify VANTA_CLIENT_ID and VANTA_CLIENT_SECRET are correct. Ensure the OAuth scope includes the required resource.'
+            : status === 429
+            ? 'Vanta API rate limit hit. Wait a moment before retrying.'
+            : 'Check that VANTA_CLIENT_ID and VANTA_CLIENT_SECRET are set correctly.';
+          const msg = `Vanta API error${status ? ` (HTTP ${status})` : ''}: ${(error as Error).message}. ${hint}`;
+          logger.error('Tool call failed', { tool: name, error: msg });
           return {
-            content: [{ type: 'text' as const, text: `Error: ${(error as Error).message}` }],
+            content: [{ type: 'text' as const, text: msg }],
             isError: true,
           };
         }

@@ -2,7 +2,7 @@
   "name": "node-ninjaone",
   "version": "1.1.2",
   "type": "commonjs",
-  "description": "Comprehensive, fully-typed Node.js/TypeScript library for the NinjaOne/NinjaRMM API",
+  "description": "Typed Node.js client for the NinjaOne/NinjaRMM API; used by ninjaone-mcp.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -25,6 +25,15 @@
   ],
   "author": "w159",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w159/ai-tech-toolkit.git",
+    "directory": "mcp_node/node-ninjaone"
+  },
+  "bugs": {
+    "url": "https://github.com/w159/ai-tech-toolkit/issues"
+  },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-ninjaone",
   "engines": {
     "node": ">=20.0.0"
   },

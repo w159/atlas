@@ -1,6 +1,12 @@
-# @asachs01/node-ninjaone
+Part of [ai-tech-toolkit](https://github.com/w159/ai-tech-toolkit) — see repo for the matching MCP server (`mcp_servers/ninjaone-mcp`) and plugin (`plugins/ninjaone-*`).
+
+# node-ninjaone
 
 Comprehensive, fully-typed Node.js/TypeScript library for the NinjaOne/NinjaRMM API.
+
+> **Vendored within the [ai-tech-toolkit](https://github.com/w159/ai-tech-toolkit) monorepo.**
+> Consumed by `ninjaone-mcp` via `"node-ninjaone": "file:../../mcp_node/node-ninjaone"`.
+> This is not the public `@asachs01/node-ninjaone` npm package — do not `npm install @asachs01/node-ninjaone`.
 
 ## Features
 
@@ -13,14 +19,12 @@ Comprehensive, fully-typed Node.js/TypeScript library for the NinjaOne/NinjaRMM 
 
 ## Installation
 
-```bash
-npm install @asachs01/node-ninjaone
-```
+This library is vendored — no separate installation needed. It is consumed by `ninjaone-mcp` as a local file dependency within the monorepo.
 
 ## Quick Start
 
 ```typescript
-import { NinjaOneClient } from '@asachs01/node-ninjaone';
+import { NinjaOneClient } from 'node-ninjaone';
 
 const client = new NinjaOneClient({
   clientId: process.env.NINJAONE_CLIENT_ID!,
@@ -295,7 +299,7 @@ import {
   NinjaOneValidationError,
   NinjaOneRateLimitError,
   NinjaOneServerError,
-} from '@asachs01/node-ninjaone';
+} from 'node-ninjaone';
 
 try {
   const device = await client.devices.get(999);
@@ -332,7 +336,7 @@ import type {
   TicketPriority,
   Webhook,
   WebhookActivityType,
-} from '@asachs01/node-ninjaone';
+} from 'node-ninjaone';
 ```
 
 ## Rate Limit Status

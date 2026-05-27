@@ -114,10 +114,15 @@ export function createServer(): Server {
     const handler = await getDomainHandler(state.currentDomain);
     try {
       return await handler.handleCall(name, (args || {}) as Record<string, unknown>, extra);
-    } catch (error) {
-      logger.error('Tool call failed', { tool: name, error: (error as Error).message });
+    } catch (error: any) {
+      const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+      const hint = status === 401 || status === 403
+        ? 'Verify BLUMIRA_JWT_TOKEN or BLUMIRA_CLIENT_ID + BLUMIRA_CLIENT_SECRET are correct.'
+        : 'Check that Blumira credentials are valid and the API is reachable.';
+      const msg = `Blumira API error${status ? ` (HTTP ${status})` : ''}: ${(error as Error).message}. ${hint}`;
+      logger.error('Tool call failed', { tool: name, error: msg });
       return {
-        content: [{ type: 'text' as const, text: `Error: ${(error as Error).message}` }],
+        content: [{ type: 'text' as const, text: msg }],
         isError: true,
       };
     }

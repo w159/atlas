@@ -25,7 +25,7 @@ export function registerCompanyTools(server: McpServer, client: CwManageClient) 
 
   server.tool(
     "cw_get_company",
-    "Get a specific company by ID.",
+    "Get a ConnectWise Manage company by ID (required). Returns company name, status, address, and contacts.",
     {
       id: z.number().describe("Company ID"),
     },
@@ -37,7 +37,7 @@ export function registerCompanyTools(server: McpServer, client: CwManageClient) 
 
   server.tool(
     "cw_create_company",
-    "Create a new company.",
+    "Create a new ConnectWise Manage company (name and identifier required). Optionally include address, type IDs, status, phone, and website.",
     {
       name: z.string().describe("Company name"),
       identifier: z.string().describe("Unique company identifier (short code)"),
@@ -70,7 +70,7 @@ export function registerCompanyTools(server: McpServer, client: CwManageClient) 
 
   server.tool(
     "cw_update_company",
-    "Update an existing company using JSON Patch operations.",
+    "Update a ConnectWise Manage company by ID (required) using JSON Patch operations array. Each operation needs op (replace/add/remove), path (e.g. 'name'), and value.",
     {
       id: z.number().describe("Company ID"),
       operations: z

@@ -8,7 +8,7 @@ function getTools(): Tool[] {
   return [
     modernListTool(
       'paylocity_employees_list',
-      'List employees from the modern CoreHR API. Supports cursor pagination and expansion fields.',
+      'List Paylocity employees from the modern CoreHR API. Use include to expand fields (info, position, status, payRate, futurePayRate). Supports cursor pagination and activeOnly filter.',
       {
         include: {
           type: 'string',
@@ -27,7 +27,7 @@ function getTools(): Tool[] {
     ),
     getTool(
       'paylocity_employees_get',
-      'Get a single employee by ID (modern CoreHR).',
+      'Get a single Paylocity employee by employeeId (required) from the modern CoreHR API. Use include to expand position, payRate, or status fields.',
       {
         employeeId: { type: 'string', description: 'Paylocity employeeId' },
         include: {

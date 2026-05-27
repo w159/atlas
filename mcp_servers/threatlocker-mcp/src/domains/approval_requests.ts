@@ -8,32 +8,32 @@ function getTools(): Tool[] {
   return [
     {
       name: 'threatlocker_approvals_list',
-      description: 'List approval requests with optional filters.',
+      description: 'List ThreatLocker software approval requests; filter by status (Pending/Approved/Denied), searchText, or childOrganizations. Use to review pending application allow requests.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          status: { type: 'string', description: 'Approval status filter' },
-          pageNumber: { type: 'number', description: 'Page number (default 1)' },
-          pageSize: { type: 'number', description: 'Page size (default 50)' },
-          searchText: { type: 'string', description: 'Search text filter' },
-          childOrganizations: { type: 'boolean', description: 'Include child organizations' },
+          status: { type: 'string', description: 'Filter by approval status (e.g. Pending, Approved, Denied).' },
+          pageNumber: { type: 'number', description: 'Page number for pagination (default: 1).' },
+          pageSize: { type: 'number', description: 'Page size — records per page (default: 50).' },
+          searchText: { type: 'string', description: 'Free-text search filter applied to application name, path, or requestor.' },
+          childOrganizations: { type: 'boolean', description: 'When true, includes approval requests from child organizations.' },
         },
       },
     },
     {
       name: 'threatlocker_approvals_get',
-      description: 'Get a single approval request by ID.',
+      description: 'Get details of a single ThreatLocker approval request by approvalRequestId (required). Returns application name, hash, requestor, and current status.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          approvalRequestId: { type: 'string', description: 'Approval request ID' },
+          approvalRequestId: { type: 'string', description: 'UUID string identifying the ThreatLocker approval request.' },
         },
         required: ['approvalRequestId'],
       },
     },
     {
       name: 'threatlocker_approvals_pending_count',
-      description: 'Get count of pending approval requests.',
+      description: 'Get the count of pending ThreatLocker approval requests. Use for a quick dashboard check before listing full approval details.',
       inputSchema: {
         type: 'object' as const,
         properties: {},
@@ -41,11 +41,11 @@ function getTools(): Tool[] {
     },
     {
       name: 'threatlocker_approvals_get_permit_application',
-      description: 'Get permit application details for an approval request.',
+      description: 'Get permit application details (allowed hash, policy assignment) for a ThreatLocker approval request by approvalRequestId (required). Use before approving to review what will be permitted.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          approvalRequestId: { type: 'string', description: 'Approval request ID' },
+          approvalRequestId: { type: 'string', description: 'UUID string identifying the ThreatLocker approval request.' },
         },
         required: ['approvalRequestId'],
       },

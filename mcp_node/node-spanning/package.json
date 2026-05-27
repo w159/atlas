@@ -2,7 +2,7 @@
   "name": "node-spanning",
   "version": "1.0.2",
   "type": "module",
-  "description": "Comprehensive, fully-typed Node.js/TypeScript client library for the Spanning Cloud Backup REST API",
+  "description": "Typed Node.js client for the Spanning Cloud Backup REST API; used by kaseya-spanning-backup-mcp.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -46,16 +46,17 @@
     "typescript",
     "kaseya"
   ],
-  "author": "Aaron Sachs",
+  "author": "w159",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/w159/node-spanning.git"
+    "url": "git+https://github.com/w159/ai-tech-toolkit.git",
+    "directory": "mcp_node/node-spanning"
   },
   "bugs": {
-    "url": "https://github.com/w159/node-spanning/issues"
+    "url": "https://github.com/w159/ai-tech-toolkit/issues"
   },
-  "homepage": "https://github.com/w159/node-spanning#readme",
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-spanning",
   "engines": {
     "node": ">=22.0.0"
   },

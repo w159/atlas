@@ -3,11 +3,11 @@
   "name": "ninjaone-mcp",
   "display_name": "NinjaOne MCP Server",
   "version": "0.0.0",
-  "description": "MCP server for NinjaOne RMM - access devices, organizations, tickets, and alerts through AI assistants",
-  "long_description": "Provides AI assistants with structured access to your NinjaOne RMM data. Manage devices, organizations, tickets, alerts, and software inventory through the Model Context Protocol.",
+  "description": "Query and manage NinjaOne RMM data — devices, organizations, tickets, alerts, and software — for MSP AI agents.",
+  "long_description": "Use this server when you need to automate or query NinjaOne RMM. List and filter devices by organization, class, or online status; get device details and installed software; reboot devices; manage Windows services; list organizations and their device counts; search and manage helpdesk tickets; and acknowledge or resolve alerts. Uses OAuth2 client_credentials. Call ninjaone_navigate first to load the tools for a specific domain.",
   "author": { "name": "w159", "url": "https://github.com/w159" },
-  "repository": { "type": "git", "url": "https://github.com/w159/ninjaone-mcp" },
-  "homepage": "https://github.com/w159/ninjaone-mcp",
+  "repository": { "type": "git", "url": "https://github.com/w159/ai-tech-toolkit" },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/ninjaone-mcp",
   "license": "Apache-2.0",
   "keywords": ["ninjaone", "rmm", "msp", "devices", "it-management"],
   "server": {
@@ -23,7 +23,7 @@
   "user_config": {
     "ninjaone_client_id": { "type": "string", "title": "NinjaOne Client ID", "description": "Your NinjaOne OAuth client ID", "sensitive": true, "required": true },
     "ninjaone_client_secret": { "type": "string", "title": "NinjaOne Client Secret", "description": "Your NinjaOne OAuth client secret", "sensitive": true, "required": true },
-    "ninjaone_region": { "type": "string", "title": "NinjaOne Region", "description": "Region: us, eu, oc, ca, us2, or fed (default: us)", "sensitive": false, "required": false }
+    "ninjaone_region": { "type": "string", "title": "NinjaOne Region (optional)", "description": "Optional. Leave blank to use the vendor default (us → https://app.ninjarmm.com). Valid values: us, eu (https://eu.ninjarmm.com), ca, oc, us2, fed. Only set if your NinjaOne instance is on a non-US region.", "sensitive": false, "required": false }
   },
   "compatibility": { "platforms": ["darwin", "win32", "linux"], "runtimes": { "node": ">=18.0.0" }, "claude_desktop": ">=0.10.0" }
 }

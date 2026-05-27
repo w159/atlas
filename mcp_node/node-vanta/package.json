@@ -1,7 +1,7 @@
 {
   "name": "node-vanta",
   "version": "1.0.0",
-  "description": "Node.js client library for the Vanta REST API",
+  "description": "Typed Node.js client for the Vanta REST API; used by vanta-mcp.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -29,6 +29,15 @@
   },
   "author": "w159",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w159/ai-tech-toolkit.git",
+    "directory": "mcp_node/node-vanta"
+  },
+  "bugs": {
+    "url": "https://github.com/w159/ai-tech-toolkit/issues"
+  },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-vanta",
   "engines": {
     "node": ">=18.0.0"
   },

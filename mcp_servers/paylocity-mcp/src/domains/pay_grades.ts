@@ -8,7 +8,7 @@ function getTools(): Tool[] {
   return [
     modernListTool(
       'paylocity_pay_grades_list',
-      'List the pay-grade catalog (modern Position Management).'
+      'List Paylocity pay grades (Position Management Modern API). Returns grade IDs and min/mid/max ranges. Use to map employee positions to their compensation band — combine with paylocity_employees_get to audit pay equity.'
     ),
   ];
 }

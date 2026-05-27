@@ -3,7 +3,7 @@ import { getCredentials } from '../credentials.js';
 
 export const statusTool: Tool = {
   name: 'auvik_status',
-  description: 'Check Auvik MCP server status and configuration',
+  description: 'Check Auvik MCP server connectivity, credential presence, and available endpoints. Use to diagnose connection issues before other calls.',
   inputSchema: {
     type: 'object',
     properties: {},

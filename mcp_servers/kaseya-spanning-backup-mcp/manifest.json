@@ -3,16 +3,17 @@
   "name": "kaseya-spanning-backup-mcp",
   "display_name": "Kaseya Spanning Backup MCP Server",
   "version": "1.0.0",
-  "description": "MCP server for Kaseya Spanning Backup — SaaS backup for Microsoft 365, Google Workspace, and Salesforce.",
-  "long_description": "Provides AI assistants with structured access to Kaseya Spanning Backup. Manage backed-up users, inspect per-user services, list daily backup runs, queue and poll restores, search the audit log, and view license/seat usage across M365, Google Workspace, and Salesforce platforms. Authentication uses Spanning HTTP Basic auth (admin email + API token, pair-bound).",
+  "description": "Query and manage Kaseya Spanning Backup for M365, Google Workspace, and Salesforce — for MSP data-protection AI agents.",
+  "long_description": "Use this server when you need to inspect or trigger Spanning SaaS backup operations. List backed-up users and their per-service status, enumerate daily backup runs, queue point-in-time restore jobs for individual users or items, poll restore job status, search the audit log for backup/restore events, and view license seat usage. Supports M365, Google Workspace, and Salesforce platforms via platform-scoped HTTP Basic auth (admin email + API token pair).",
   "author": {
     "name": "w159",
     "url": "https://github.com/w159"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w159/kaseya-spanning-backup-mcp"
+    "url": "https://github.com/w159/ai-tech-toolkit"
   },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/kaseya-spanning-backup-mcp",
   "license": "Apache-2.0",
   "keywords": [
     "kaseya",
@@ -57,15 +58,15 @@
     },
     "spanning_platform": {
       "type": "string",
-      "title": "Spanning Platform",
-      "description": "Which Spanning product the token targets: m365 (Microsoft 365), gws (Google Workspace), or salesforce. Tokens cannot cross platforms. Default: m365.",
+      "title": "Spanning Platform (optional)",
+      "description": "Optional. Which Spanning product the token targets. Leave blank to use the default (m365 → https://o365-api.spanningbackup.com/external). Other values: gws (→ https://api.spanningbackup.com/external), salesforce (→ https://salesforce-api.spanningbackup.com). Tokens cannot cross platforms.",
       "required": false,
       "default": "m365"
     },
     "spanning_api_url": {
       "type": "string",
-      "title": "Spanning API Base URL (override)",
-      "description": "Optional. Override the API base URL — only needed for staging shards. When unset, the URL is derived from spanning_platform.",
+      "title": "Spanning API Base URL (optional)",
+      "description": "Optional. Leave blank to use the vendor default derived from spanning_platform. Only set for staging/sovereign shards.",
       "required": false
     }
   }

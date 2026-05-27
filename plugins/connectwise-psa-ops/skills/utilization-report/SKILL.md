@@ -7,7 +7,7 @@ description: Compute technician utilization with billable vs non-billable mix, t
 
 ## Pipeline
 
-1. `cw_members_list` (active only).
+1. `cw_search_members` (active only).
 2. **Parallel per member** (concurrency 6): `cw_search_time_entries` for the date window the user gave (default last 7 days).
 3. **In `ctx_execute`**:
    - Sum hours per member, split billable/non-billable, internal/customer.

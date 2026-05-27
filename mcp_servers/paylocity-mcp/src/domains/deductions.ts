@@ -8,7 +8,7 @@ function getTools(): Tool[] {
   return [
     legacyListTool(
       'paylocity_deductions_list',
-      "List a single employee's deductions (legacy /api/v1).",
+      "List all payroll deductions for a single Paylocity employee by employeeId (required). Returns deduction codes, amounts, and effective dates via legacy /api/v1.",
       { employeeId: { type: 'string', description: 'Paylocity employeeId' } }
     ),
   ];

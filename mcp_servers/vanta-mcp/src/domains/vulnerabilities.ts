@@ -6,11 +6,11 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_vulnerabilities_list', 'List discovered vulnerabilities with SLA + fix availability.', {
-      q: { type: 'string', description: 'Free-text query (CVE, package name, etc.).' },
-      isFixAvailable: { type: 'boolean', description: 'Only return vulns where a fix is published.' },
+    listTool('vanta_vulnerabilities_list', 'List Vanta discovered vulnerabilities with CVE IDs, SLA deadlines, and fix availability; optionally filter by free-text query (CVE ID, package name) or isFixAvailable (boolean). Use to triage open CVEs or find actionable vulnerabilities.', {
+      q: { type: 'string', description: 'Free-text query (CVE ID, package name, etc.).' },
+      isFixAvailable: { type: 'boolean', description: 'When true, restrict to vulnerabilities where a fix is published.' },
     }),
-    getTool('vanta_vulnerabilities_get', 'Get a single vulnerability by ID.', 'id', 'Vulnerability ID'),
+    getTool('vanta_vulnerabilities_get', 'Get a single Vanta vulnerability by ID (required). Returns CVE details, affected resources, SLA deadline, and remediation guidance.', 'id', 'Vulnerability ID'),
   ];
 }
 

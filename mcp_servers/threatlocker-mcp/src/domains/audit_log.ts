@@ -8,37 +8,37 @@ function getTools(): Tool[] {
   return [
     {
       name: 'threatlocker_audit_search',
-      description: 'Search audit log entries with optional filters.',
+      description: 'Search ThreatLocker audit log for application execution events; filter by searchText, startDate/endDate (ISO 8601), and childOrganizations. Use to investigate blocked or allowed application events.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          searchText: { type: 'string', description: 'Search text filter' },
-          startDate: { type: 'string', description: 'Start date filter (ISO 8601)' },
-          endDate: { type: 'string', description: 'End date filter (ISO 8601)' },
-          pageNumber: { type: 'number', description: 'Page number (default 1)' },
-          pageSize: { type: 'number', description: 'Page size (default 50)' },
-          childOrganizations: { type: 'boolean', description: 'Include child organizations' },
+          searchText: { type: 'string', description: 'Free-text search applied to application name, path, or user.' },
+          startDate: { type: 'string', description: 'ISO 8601 datetime — return only entries at or after this time (e.g. 2024-01-01T00:00:00Z).' },
+          endDate: { type: 'string', description: 'ISO 8601 datetime — return only entries at or before this time.' },
+          pageNumber: { type: 'number', description: 'Page number for pagination (default: 1).' },
+          pageSize: { type: 'number', description: 'Page size — records per page (default: 50).' },
+          childOrganizations: { type: 'boolean', description: 'When true, includes audit entries from child organizations.' },
         },
       },
     },
     {
       name: 'threatlocker_audit_get',
-      description: 'Get a single audit log entry by ID.',
+      description: 'Get a single ThreatLocker audit log entry by actionLogId (required). Returns full event details including application path, hash, user, and action taken.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          actionLogId: { type: 'string', description: 'Action log ID' },
+          actionLogId: { type: 'string', description: 'UUID string identifying the specific audit log action entry.' },
         },
         required: ['actionLogId'],
       },
     },
     {
       name: 'threatlocker_audit_file_history',
-      description: 'Get audit history for a specific file path.',
+      description: 'Get ThreatLocker audit history for a specific file path (fullPath required, e.g. C:\\Windows\\System32\\cmd.exe). Returns all execution and block events for that file.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          fullPath: { type: 'string', description: 'Full file path' },
+          fullPath: { type: 'string', description: 'Absolute filesystem path of the file to retrieve audit history for (e.g. C:\\Windows\\System32\\cmd.exe).' },
         },
         required: ['fullPath'],
       },

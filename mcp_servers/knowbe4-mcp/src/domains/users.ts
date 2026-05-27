@@ -18,7 +18,7 @@ function getTools(): Tool[] {
     {
       name: "knowbe4_users_list",
       description:
-        "List KnowBe4 users with optional filtering by status or group. Returns paginated results including email, name, risk score, and department.",
+        "List KnowBe4 users; optionally filter by status (active/archived) or group_id. Returns paginated users with email, name, risk score, and department. Use to get user IDs for other tools.",
       inputSchema: {
         type: "object" as const,
         properties: {
@@ -87,6 +87,7 @@ async function handleCall(
   toolName: string,
   args: Record<string, unknown>
 ): Promise<CallToolResult> {
+  try {
   switch (toolName) {
     case "knowbe4_users_list": {
       const page = (args.page as number) || 1;
@@ -201,6 +202,17 @@ async function handleCall(
         content: [{ type: "text", text: `Unknown users tool: ${toolName}` }],
         isError: true,
       };
+  }
+  } catch (error: any) {
+    const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+    const hint = status === 401 || status === 403
+      ? 'Verify KNOWBE4_API_KEY is correct and has the required permissions.'
+      : status === 429
+      ? 'KnowBe4 rate limit hit. Wait before retrying.'
+      : 'Check that KNOWBE4_API_KEY is set and KNOWBE4_REGION matches your account region (us, eu, ca, uk, sg, au).';
+    const msg = `KnowBe4 API error${status ? ` (HTTP ${status})` : ''}: ${error?.message ?? String(error)}. ${hint}`;
+    logger.error("Tool call failed", { tool: toolName, error: msg });
+    return { content: [{ type: "text", text: msg }], isError: true };
   }
 }
 

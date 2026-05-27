@@ -18,40 +18,47 @@ function getTools(): Tool[] {
     {
       name: "ninjaone_tickets_list",
       description:
-        "List tickets, filterable by status, organization, or device",
+        "List NinjaOne helpdesk tickets; filter by status (OPEN/IN_PROGRESS/WAITING/CLOSED), organization_id, device_id, or board_id. Returns ticket IDs for further operations.",
       inputSchema: {
         type: "object" as const,
         properties: {
           status: {
             type: "string",
             enum: ["OPEN", "IN_PROGRESS", "WAITING", "CLOSED"],
+            description: "Filter by ticket status.",
           },
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID; restricts results to tickets for one customer.",
           },
           device_id: {
             type: "number",
+            description: "Integer NinjaOne device ID; restricts results to tickets linked to one device.",
           },
           board_id: {
             type: "number",
+            description: "Integer service board ID; restricts results to one ticket board.",
           },
           limit: {
             type: "number",
+            description: "Page size — maximum tickets to return in one call (default: 50).",
           },
           cursor: {
             type: "string",
+            description: "Opaque pagination cursor from the previous page response.",
           },
         },
       },
     },
     {
       name: "ninjaone_tickets_get",
-      description: "Get ticket details by ID",
+      description: "Get full details of a NinjaOne ticket by ticket_id (required). Returns subject, status, assignee, device, comments, and time entries.",
       inputSchema: {
         type: "object" as const,
         properties: {
           ticket_id: {
             type: "number",
+            description: "Integer NinjaOne ticket ID.",
           },
         },
         required: ["ticket_id"],
@@ -59,32 +66,39 @@ function getTools(): Tool[] {
     },
     {
       name: "ninjaone_tickets_create",
-      description: "Create new ticket",
+      description: "Create a new NinjaOne helpdesk ticket (subject required). Optionally specify description, organization_id, device_id, priority, and status.",
       inputSchema: {
         type: "object" as const,
         properties: {
           subject: {
             type: "string",
+            description: "Ticket title or subject line.",
           },
           description: {
             type: "string",
+            description: "Detailed description of the issue or request.",
           },
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID; associates the ticket with a customer account.",
           },
           device_id: {
             type: "number",
+            description: "Integer NinjaOne device ID; links the ticket to a specific device.",
           },
           board_id: {
             type: "number",
+            description: "Integer service board ID; routes the ticket to a specific board.",
           },
           priority: {
             type: "string",
             enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+            description: "Ticket priority level.",
           },
           type: {
             type: "string",
             enum: ["PROBLEM", "QUESTION", "INCIDENT", "TASK"],
+            description: "Ticket type classification.",
           },
         },
         required: ["subject", "organization_id"],
@@ -98,23 +112,29 @@ function getTools(): Tool[] {
         properties: {
           ticket_id: {
             type: "number",
+            description: "Integer NinjaOne ticket ID of the ticket to update.",
           },
           subject: {
             type: "string",
+            description: "Updated ticket title or subject line.",
           },
           description: {
             type: "string",
+            description: "Updated detailed description.",
           },
           status: {
             type: "string",
             enum: ["OPEN", "IN_PROGRESS", "WAITING", "CLOSED"],
+            description: "New ticket status.",
           },
           priority: {
             type: "string",
             enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+            description: "New ticket priority level.",
           },
           assignee_id: {
             type: "number",
+            description: "Integer NinjaOne technician/user ID to assign the ticket to.",
           },
         },
         required: ["ticket_id"],
@@ -122,19 +142,21 @@ function getTools(): Tool[] {
     },
     {
       name: "ninjaone_tickets_add_comment",
-      description: "Add comment to ticket",
+      description: "VISIBLE-TO-OTHERS: Add a comment to a NinjaOne ticket. Public comments are visible to the customer in the portal.",
       inputSchema: {
         type: "object" as const,
         properties: {
           ticket_id: {
             type: "number",
+            description: "Integer NinjaOne ticket ID.",
           },
           body: {
             type: "string",
+            description: "Comment text content.",
           },
           public: {
             type: "boolean",
-            description: "visible to customers (default: true)",
+            description: "When true the comment is visible to the customer in the portal (default: true).",
           },
         },
         required: ["ticket_id", "body"],
@@ -148,6 +170,7 @@ function getTools(): Tool[] {
         properties: {
           ticket_id: {
             type: "number",
+            description: "Integer NinjaOne ticket ID.",
           },
         },
         required: ["ticket_id"],

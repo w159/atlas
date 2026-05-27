@@ -6,11 +6,11 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_frameworks_list', 'List compliance frameworks the workspace is tracking (SOC 2, ISO 27001, etc.).'),
-    getTool('vanta_frameworks_get', 'Get a single framework by ID.', 'id', 'Framework ID'),
+    listTool('vanta_frameworks_list', 'List Vanta compliance frameworks the workspace is tracking (SOC 2, ISO 27001, HIPAA, etc.). Returns framework IDs needed for filtering controls and tests.'),
+    getTool('vanta_frameworks_get', 'Get a single Vanta framework by ID (required). Returns readiness percentage, control counts, and deadline.', 'id', 'Framework ID'),
     {
       name: 'vanta_frameworks_list_controls',
-      description: 'List the controls scoped to a specific framework.',
+      description: 'List Vanta controls scoped to a specific compliance framework by framework ID (required). Use to enumerate all controls required for a single framework like SOC 2 or ISO 27001.',
       inputSchema: {
         type: 'object' as const,
         properties: {

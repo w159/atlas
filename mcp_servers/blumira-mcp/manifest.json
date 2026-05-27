@@ -3,17 +3,17 @@
   "name": "blumira-mcp",
   "version": "1.0.0",
   "display_name": "Blumira MCP Server",
-  "description": "MCP server for Blumira SIEM — manage findings, agents, users, and MSP accounts through AI assistants",
-  "long_description": "Provides AI assistants with structured access to your Blumira SIEM data. Search and manage security findings, monitor agents, list users, and handle MSP multi-account operations through the Model Context Protocol. Features decision-tree navigation, dual transport (stdio + HTTP streaming), and comprehensive error handling.",
+  "description": "Query and manage Blumira SIEM findings, agents, users, and MSP sub-accounts — for security operations AI agents.",
+  "long_description": "Use this server when you need to triage or act on Blumira SIEM security findings. List/search findings with rich filters (status, priority, category, date range), get finding details and comments, resolve findings with a resolution code, assign owners, and add investigation comments. Manage Blumira agent devices and agent keys. MSP operators can switch between sub-accounts and perform the same finding/agent/user operations scoped to each account. Call blumira_navigate first to load the tools for a specific domain.",
   "author": {
     "name": "w159",
     "url": "https://github.com/w159"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w159/blumira-mcp"
+    "url": "https://github.com/w159/ai-tech-toolkit"
   },
-  "homepage": "https://github.com/w159/blumira-mcp",
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/blumira-mcp",
   "license": "Apache-2.0",
   "keywords": ["blumira", "siem", "msp", "security", "mcp"],
   "server": {

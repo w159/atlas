@@ -2,7 +2,7 @@ import { Tool } from '@modelcontextprotocol/sdk/types.js';
 
 export const navigateTool: Tool = {
   name: 'auvik_navigate',
-  description: 'Get navigation links to Auvik UI and documentation',
+  description: 'Return quick-access URLs to the Auvik dashboard, devices, networks, alerts, reports, API docs, and status pages. Use when a user asks for a link to Auvik.',
   inputSchema: {
     type: 'object',
     properties: {},

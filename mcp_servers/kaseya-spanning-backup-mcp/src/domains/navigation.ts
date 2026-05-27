@@ -39,7 +39,7 @@ export function getNavigationTools(): Tool[] {
     },
     {
       name: 'spanning_status',
-      description: 'Show credentials status, platform, and available domains.',
+      description: 'Show Spanning Backup credentials status, configured platform (m365/gws/salesforce), and available domains. Use to verify connectivity before calling other tools.',
       inputSchema: { type: 'object' as const, properties: {} },
     },
   ];

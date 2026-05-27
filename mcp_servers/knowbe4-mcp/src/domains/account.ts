@@ -16,7 +16,7 @@ function getTools(): Tool[] {
     {
       name: "knowbe4_account_get",
       description:
-        "Get KnowBe4 account information including subscription level, number of seats, admin details, and current risk score.",
+        "Retrieve KnowBe4 account details: subscription level, seat count, admin info, and current overall risk score. Use to confirm API connectivity or get high-level account stats.",
       inputSchema: {
         type: "object" as const,
         properties: {},
@@ -25,7 +25,7 @@ function getTools(): Tool[] {
     {
       name: "knowbe4_account_risk_score_history",
       description:
-        "Get the account-level risk score history over time. Useful for tracking overall security posture improvement.",
+        "Retrieve the KnowBe4 account-level risk score history over time. Returns paginated score snapshots. Use to track security posture improvement trends.",
       inputSchema: {
         type: "object" as const,
         properties: {
@@ -47,57 +47,50 @@ async function handleCall(
   toolName: string,
   args: Record<string, unknown>
 ): Promise<CallToolResult> {
-  switch (toolName) {
-    case "knowbe4_account_get": {
-      logger.info("API call: account.get");
+  try {
+    switch (toolName) {
+      case "knowbe4_account_get": {
+        logger.info("API call: account.get");
+        const result = await apiRequest<unknown>("/v1/account");
+        logger.debug("API response: account.get", { hasResult: !!result });
+        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+      }
 
-      const result = await apiRequest<unknown>("/v1/account");
-
-      logger.debug("API response: account.get", {
-        hasResult: !!result,
-      });
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result, null, 2),
-          },
-        ],
-      };
-    }
-
-    case "knowbe4_account_risk_score_history": {
-      const page = (args.page as number) || 1;
-      const perPage = (args.per_page as number) || 100;
-
-      logger.info("API call: account.riskScoreHistory", { page, perPage });
-
-      const result = await apiRequest<unknown>("/v1/account/risk_score_history", {
-        params: { page, per_page: perPage },
-      });
-
-      const history = Array.isArray(result) ? result : (result as Record<string, unknown>)?.data ?? result;
-
-      logger.debug("API response: account.riskScoreHistory", {
-        count: Array.isArray(history) ? history.length : "unknown",
-      });
-
-      return {
-        content: [
-          {
+      case "knowbe4_account_risk_score_history": {
+        const page = (args.page as number) || 1;
+        const perPage = (args.per_page as number) || 100;
+        logger.info("API call: account.riskScoreHistory", { page, perPage });
+        const result = await apiRequest<unknown>("/v1/account/risk_score_history", {
+          params: { page, per_page: perPage },
+        });
+        const history = Array.isArray(result) ? result : (result as Record<string, unknown>)?.data ?? result;
+        logger.debug("API response: account.riskScoreHistory", {
+          count: Array.isArray(history) ? history.length : "unknown",
+        });
+        return {
+          content: [{
             type: "text",
             text: JSON.stringify({ risk_score_history: history, page, per_page: perPage }, null, 2),
-          },
-        ],
-      };
-    }
+          }],
+        };
+      }
 
-    default:
-      return {
-        content: [{ type: "text", text: `Unknown account tool: ${toolName}` }],
-        isError: true,
-      };
+      default:
+        return {
+          content: [{ type: "text", text: `Unknown account tool: ${toolName}` }],
+          isError: true,
+        };
+    }
+  } catch (error: any) {
+    const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+    const hint = status === 401 || status === 403
+      ? 'Verify KNOWBE4_API_KEY is correct and has the required permissions.'
+      : status === 429
+      ? 'KnowBe4 rate limit hit. Wait before retrying.'
+      : 'Check that KNOWBE4_API_KEY is set and KNOWBE4_REGION matches your account region (us, eu, ca, uk, sg, au).';
+    const msg = `KnowBe4 API error${status ? ` (HTTP ${status})` : ''}: ${error?.message ?? String(error)}. ${hint}`;
+    logger.error("Tool call failed", { tool: toolName, error: msg });
+    return { content: [{ type: "text", text: msg }], isError: true };
   }
 }
 

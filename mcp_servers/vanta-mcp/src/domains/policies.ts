@@ -6,8 +6,8 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_policies_list', 'List approved workspace policies.'),
-    getTool('vanta_policies_get', 'Get a single policy by ID.', 'id', 'Policy ID'),
+    listTool('vanta_policies_list', 'List Vanta approved workspace policies with their approval status and owners. Use to enumerate policies for audit review or to find the policy ID for a specific domain (e.g. access control, incident response).'),
+    getTool('vanta_policies_get', 'Get a single Vanta policy by ID (required). Returns policy content, version, last approved date, and approver.', 'id', 'Policy ID'),
   ];
 }
 

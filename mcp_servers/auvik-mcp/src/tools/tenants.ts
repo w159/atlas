@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const tenantsListTool: Tool = {
   name: 'auvik_tenants_list',
-  description: 'List all accessible Auvik tenants',
+  description: 'List all Auvik tenants accessible with the current credentials. Returns tenant IDs needed for other multi-tenant tool calls.',
   inputSchema: {
     type: 'object',
     properties: {},
@@ -15,7 +15,7 @@ export const tenantsListTool: Tool = {
 
 export const tenantsGetTool: Tool = {
   name: 'auvik_tenants_get',
-  description: 'Get basic information about a specific tenant',
+  description: 'Get basic info (name, domain type) for an Auvik tenant by tenantId (required). Use to confirm a tenant before scoping other calls.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -31,7 +31,7 @@ export const tenantsGetTool: Tool = {
 
 export const tenantsDetailTool: Tool = {
   name: 'auvik_tenants_detail',
-  description: 'Get detailed information about a specific tenant',
+  description: 'Get extended detail (settings, feature flags) for an Auvik tenant by tenantId (required). Use when tenant configuration context is needed.',
   inputSchema: {
     type: 'object',
     properties: {

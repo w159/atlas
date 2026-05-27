@@ -12,9 +12,11 @@
  *   CW_MANAGE_CLIENT_ID         - Client ID from ConnectWise Developer Portal
  *
  * Optional environment variables:
- *   CW_MANAGE_URL               - API base URL (default: https://api-na.myconnectwise.net)
- *                                  Cloud: api-na.myconnectwise.net, api-eu.myconnectwise.net, api-au.myconnectwise.net
- *                                  Self-hosted: https://cwm.yourcompany.com (or with full path)
+ *   CW_MANAGE_BASE_URL          - API base URL (default: https://api-na.myconnectwise.net). Optional.
+ *                                  Cloud: https://api-na.myconnectwise.net (NA, default),
+ *                                         https://api-eu.myconnectwise.net, https://api-au.myconnectwise.net
+ *                                  Self-hosted: https://cwm.yourcompany.com
+ *                                  (CW_MANAGE_URL is also accepted as a legacy alias)
  *   CW_MANAGE_REJECT_UNAUTHORIZED - Set to "false" for self-signed certs (default: "true")
  *   MCP_TRANSPORT               - "stdio" (default) or "http"
  *   MCP_HTTP_PORT               - HTTP port (default: 8080)
@@ -79,10 +81,33 @@ function createMcpServer(): McpServer {
   const config = getConfig();
 
   if (!config) {
-    // Register a single diagnostic tool so the client gets a clear error
+    // Register diagnostic tools so the client can check configuration state
+    server.tool(
+      "cw_status",
+      "Show ConnectWise Manage MCP server configuration status: which environment variables are set and what base URL is in use. Always works, even with missing credentials.",
+      {},
+      async () => ({
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({
+              configured: false,
+              credentials: {
+                CW_MANAGE_COMPANY_ID: process.env.CW_MANAGE_COMPANY_ID ? "set" : "NOT SET — required",
+                CW_MANAGE_PUBLIC_KEY: process.env.CW_MANAGE_PUBLIC_KEY ? "set" : "NOT SET — required",
+                CW_MANAGE_PRIVATE_KEY: process.env.CW_MANAGE_PRIVATE_KEY ? "set" : "NOT SET — required",
+                CW_MANAGE_CLIENT_ID: process.env.CW_MANAGE_CLIENT_ID ? "set" : "NOT SET — required",
+                CW_MANAGE_BASE_URL: process.env.CW_MANAGE_BASE_URL ?? process.env.CW_MANAGE_URL ?? "(not set — will use https://api-na.myconnectwise.net)",
+              },
+              note: "Set all required environment variables and restart the server.",
+            }, null, 2),
+          },
+        ],
+      }),
+    );
     server.tool(
       "cw_test_connection",
-      "Test the connection to ConnectWise Manage.",
+      "Verify ConnectWise Manage API connectivity by fetching system info. Returns API version and licensing details. Use to confirm credentials are working.",
       {},
       async () => ({
         content: [
@@ -98,7 +123,7 @@ function createMcpServer(): McpServer {
               "  CW_MANAGE_CLIENT_ID         - Client ID from ConnectWise Developer Portal",
               "",
               "Optional:",
-              "  CW_MANAGE_URL               - API base URL",
+              "  CW_MANAGE_BASE_URL          - API base URL (optional; default: https://api-na.myconnectwise.net)",
               "    Cloud:       https://api-na.myconnectwise.net (default)",
               "                 https://api-eu.myconnectwise.net",
               "                 https://api-au.myconnectwise.net",
@@ -351,7 +376,7 @@ async function startHttpTransport(): Promise<void> {
           process.env.CW_MANAGE_PRIVATE_KEY = privateKey;
           process.env.CW_MANAGE_CLIENT_ID = clientId;
           if (baseUrl) {
-            process.env.CW_MANAGE_URL = baseUrl;
+            process.env.CW_MANAGE_BASE_URL = baseUrl;
           }
         }
 

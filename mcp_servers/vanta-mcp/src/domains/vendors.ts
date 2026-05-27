@@ -6,8 +6,8 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_vendors_list', 'List third-party vendors with risk status.'),
-    getTool('vanta_vendors_get', 'Get a single vendor by ID.', 'id', 'Vendor ID'),
+    listTool('vanta_vendors_list', 'List Vanta third-party vendors with risk tier, review status, and associated controls. Use to audit vendor security posture or find vendors pending review.'),
+    getTool('vanta_vendors_get', 'Get a single Vanta vendor record by ID (required). Returns risk tier, last review date, questionnaire status, and linked controls.', 'id', 'Vendor ID'),
   ];
 }
 

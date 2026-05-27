@@ -1,19 +1,19 @@
 {
   "manifest_version": "0.3",
   "name": "threatlocker-mcp",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "display_name": "ThreatLocker MCP Server",
-  "description": "MCP server for ThreatLocker Portal API - access computers, approval requests, audit logs, and organizations through AI assistants",
-  "long_description": "Provides AI assistants with structured access to your ThreatLocker Portal data. Manage computers, computer groups, approval requests, audit logs, and organizations through the Model Context Protocol. Features decision-tree navigation, elicitation prompts, and comprehensive error handling.",
+  "description": "Query and manage ThreatLocker endpoint application-control data — computers, groups, approval requests, and audit logs — for MSP security AI agents.",
+  "long_description": "Use this server when you need to automate ThreatLocker Portal operations. List and filter computers and computer groups by organization; retrieve and act on software approval requests (approve/deny); search the audit log for blocked application events; and manage organizations (MSP child tenants). Supports scoping to a specific managed organization via the optional THREATLOCKER_ORGANIZATION_ID config, or acting as the primary org by default.",
   "author": {
     "name": "w159",
     "url": "https://github.com/w159"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w159/threatlocker-mcp"
+    "url": "https://github.com/w159/ai-tech-toolkit"
   },
-  "homepage": "https://github.com/w159/threatlocker-mcp",
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/threatlocker-mcp",
   "license": "Apache-2.0",
   "keywords": ["threatlocker", "security", "endpoint", "application-control", "msp", "computers"],
   "server": {
@@ -48,7 +48,7 @@
     "threatlocker_base_url": {
       "type": "string",
       "title": "Portal API base URL (optional)",
-      "description": "Optional. Override only if your tenant lives on a non-default ThreatLocker shard. Example: https://portalapi.g.us.threatlocker.com/portalapi or https://portalapi.eu.threatlocker.com/portalapi. Find yours at https://threatlocker.kb.help/locating-your-organizations-instance/",
+      "description": "Optional. Leave blank to use the vendor default (https://portalapi.g.threatlocker.com/portalapi). Only set if your tenant lives on a non-default shard (e.g. https://portalapi.eu.threatlocker.com/portalapi). Find yours at https://threatlocker.kb.help/locating-your-organizations-instance/",
       "required": false
     }
   },

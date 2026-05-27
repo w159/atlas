@@ -7,19 +7,19 @@ function getTools(): Tool[] {
   return [
     {
       name: 'threatlocker_computer_groups_list',
-      description: 'List computer groups with optional filters.',
+      description: 'List ThreatLocker computer groups; filter by osType (Windows/macOS/Linux), and optionally include the All-Computers or global groups. Use to find group names for scoped computer queries.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          osType: { type: 'string', description: 'Operating system type filter' },
-          includeAllComputers: { type: 'boolean', description: 'Include "All Computers" group' },
-          includeGlobal: { type: 'boolean', description: 'Include global groups' },
+          osType: { type: 'string', description: 'Filter by operating system type (e.g. Windows, macOS, Linux).' },
+          includeAllComputers: { type: 'boolean', description: 'When true, includes the built-in "All Computers" group in results.' },
+          includeGlobal: { type: 'boolean', description: 'When true, includes groups shared across all organizations.' },
         },
       },
     },
     {
       name: 'threatlocker_computer_groups_dropdown',
-      description: 'Get computer groups in dropdown format.',
+      description: 'Get ThreatLocker computer groups as a compact list (id/name pairs). Use when you need a quick lookup of group IDs for UI-like selection.',
       inputSchema: {
         type: 'object' as const,
         properties: {},

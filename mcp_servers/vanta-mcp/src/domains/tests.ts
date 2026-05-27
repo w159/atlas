@@ -6,11 +6,11 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_tests_list', 'List automated control tests with status (OK, NEEDS_ATTENTION, DEACTIVATED).', {
-      statusFilter: { type: 'string', description: 'Status filter (e.g. NEEDS_ATTENTION).' },
-      frameworkFilter: { type: 'string', description: 'Framework ID to restrict tests to.' },
+    listTool('vanta_tests_list', 'List Vanta automated control tests; filter by statusFilter (OK, NEEDS_ATTENTION, DEACTIVATED) or frameworkFilter (framework ID). Use to audit which tests are failing or deactivated for a given compliance framework.', {
+      statusFilter: { type: 'string', description: 'Status filter (e.g. NEEDS_ATTENTION, OK, DEACTIVATED).' },
+      frameworkFilter: { type: 'string', description: 'Framework ID to restrict tests to a single framework.' },
     }),
-    getTool('vanta_tests_get', 'Get a single test by ID.', 'id', 'Test ID'),
+    getTool('vanta_tests_get', 'Get a single Vanta automated control test by ID (required). Returns test name, linked control, current status, and failure details.', 'id', 'Test ID'),
   ];
 }
 

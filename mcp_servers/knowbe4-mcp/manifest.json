@@ -2,17 +2,18 @@
   "manifest_version": "0.3",
   "name": "knowbe4-mcp",
   "display_name": "KnowBe4 MCP Server",
-  "version": "1.0.0",
-  "description": "MCP server for KnowBe4 — security awareness training, phishing simulation, and user risk management.",
-  "long_description": "Provides Claude with tools to interact with the KnowBe4 Reporting API. Manage phishing campaigns, training enrollments, user risk scores, groups, policies, store purchases, and generate security awareness reports. Supports all KnowBe4 regions (US, EU, CA, UK, DE).",
+  "version": "1.0.1",
+  "description": "Query KnowBe4 security awareness data — phishing campaigns, training enrollments, user risk scores, and groups — for MSP AI agents.",
+  "long_description": "Use this server when you need to read security awareness and phishing simulation data from KnowBe4. List phishing campaigns and per-user phishing results, enumerate training campaigns and enrollment status, retrieve user risk scores and click rates, manage user groups, and access account-level configuration. Supports all KnowBe4 API regions (us, eu, ca, uk, de). Read-only reporting API — write operations are not available via this API.",
   "author": {
     "name": "w159",
     "url": "https://github.com/w159"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w159/mcp-server-knowbe4"
+    "url": "https://github.com/w159/ai-tech-toolkit"
   },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/knowbe4-mcp",
   "license": "Apache-2.0",
   "keywords": ["knowbe4", "security-awareness", "phishing", "training", "mcp", "msp"],
   "server": {
@@ -38,8 +39,8 @@
     },
     "region": {
       "type": "string",
-      "title": "Region",
-      "description": "KnowBe4 API region (us, eu, ca, uk, de). Defaults to us.",
+      "title": "Region (optional)",
+      "description": "Optional. Leave blank to use the vendor default (us → https://us.api.knowbe4.com). Valid values: us, eu (https://eu.api.knowbe4.com), ca, uk, de. Only set if your KnowBe4 account is on a non-US region.",
       "required": false
     }
   },

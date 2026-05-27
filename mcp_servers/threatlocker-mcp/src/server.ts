@@ -90,10 +90,15 @@ export function createMcpServer(): Server {
       if (toolNames.includes(name)) {
         try {
           return await handler.handleCall(name, (args || {}) as Record<string, unknown>, extra);
-        } catch (error) {
-          logger.error('Tool call failed', { tool: name, error: (error as Error).message });
+        } catch (error: any) {
+          const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+          const hint = status === 401 || status === 403
+            ? 'Verify THREATLOCKER_API_KEY is correct and the key has appropriate permissions.'
+            : 'Check that THREATLOCKER_API_KEY is set. Verify THREATLOCKER_BASE_URL if using a non-default region.';
+          const msg = `ThreatLocker API error${status ? ` (HTTP ${status})` : ''}: ${(error as Error).message}. ${hint}`;
+          logger.error('Tool call failed', { tool: name, error: msg });
           return {
-            content: [{ type: 'text' as const, text: `Error: ${(error as Error).message}` }],
+            content: [{ type: 'text' as const, text: msg }],
             isError: true,
           };
         }

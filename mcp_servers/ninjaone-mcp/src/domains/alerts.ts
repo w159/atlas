@@ -19,29 +19,34 @@ function getTools(): Tool[] {
     {
       name: "ninjaone_alerts_list",
       description:
-        "List active alerts, filterable by severity, organization, or device",
+        "List active NinjaOne alerts; filter by severity (CRITICAL/MAJOR/MINOR/NONE), organization_id, or device_id. Returns alert IDs needed for reset/resolve operations.",
       inputSchema: {
         type: "object" as const,
         properties: {
           severity: {
             type: "string",
             enum: ["CRITICAL", "MAJOR", "MINOR", "NONE"],
+            description: "Filter alerts to only the specified severity level.",
           },
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID; restricts results to one customer account.",
           },
           device_id: {
             type: "number",
+            description: "Integer NinjaOne device ID; restricts results to alerts from one device.",
           },
           source_type: {
             type: "string",
-            description: "e.g., CONDITION, ACTIVITY",
+            description: "Filter by alert source type (e.g. CONDITION, ACTIVITY).",
           },
           limit: {
             type: "number",
+            description: "Page size — maximum alerts to return in one call (default: 50).",
           },
           cursor: {
             type: "string",
+            description: "Opaque pagination cursor from the previous page response.",
           },
         },
       },
@@ -49,12 +54,13 @@ function getTools(): Tool[] {
     {
       name: "ninjaone_alerts_reset",
       description:
-        "Reset (dismiss) an alert - acknowledges and marks as handled",
+        "VISIBLE-TO-OTHERS: Reset (dismiss) an alert — acknowledges and marks as handled. The alert is removed from active alert views for all users.",
       inputSchema: {
         type: "object" as const,
         properties: {
           alert_uid: {
             type: "string",
+            description: "UUID string identifying the specific alert to dismiss.",
           },
         },
         required: ["alert_uid"],
@@ -63,19 +69,22 @@ function getTools(): Tool[] {
     {
       name: "ninjaone_alerts_reset_all",
       description:
-        "Reset all alerts for a device or organization (destructive action)",
+        "DESTRUCTIVE: Bulk-dismiss all alerts for a device or organization — removes all matching alerts from the active queue for all users. Requires device_id or organization_id.",
       inputSchema: {
         type: "object" as const,
         properties: {
           device_id: {
             type: "number",
+            description: "Integer NinjaOne device ID; dismisses all alerts for this device.",
           },
           organization_id: {
             type: "number",
+            description: "Integer NinjaOne organization ID; dismisses all alerts for this organization.",
           },
           severity: {
             type: "string",
             enum: ["CRITICAL", "MAJOR", "MINOR", "NONE"],
+            description: "Optionally restrict bulk-dismiss to only this severity level.",
           },
         },
       },
@@ -90,6 +99,7 @@ function getTools(): Tool[] {
           group_by: {
             type: "string",
             enum: ["severity", "organization", "both"],
+            description: "Dimension to group counts by: 'severity', 'organization', or 'both' (default: 'severity').",
           },
         },
       },

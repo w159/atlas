@@ -6,11 +6,11 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_people_list', 'List workforce members.', {
-      emailAndNameFilter: { type: 'string', description: 'Free-text filter against email/name.' },
+    listTool('vanta_people_list', 'List Vanta workforce members with their compliance task status; optionally filter by emailAndNameFilter (free-text) or groupIdsMatchesAny (group ID array). Use to find a person ID for control ownership lookups or to audit outstanding employee tasks.', {
+      emailAndNameFilter: { type: 'string', description: 'Free-text filter against email or display name.' },
       groupIdsMatchesAny: { type: 'array', items: { type: 'string' }, description: 'Restrict to people in any of these group IDs.' },
     }),
-    getTool('vanta_people_get', 'Get a single person by ID.', 'id', 'Person ID'),
+    getTool('vanta_people_get', 'Get a single Vanta workforce member by ID (required). Returns email, role, group memberships, and outstanding compliance tasks.', 'id', 'Person ID'),
   ];
 }
 

@@ -437,6 +437,24 @@ export class CippToolHandler {
         // -----------------------------------------------------------------------
         // Core
         // -----------------------------------------------------------------------
+        case 'cipp_status': {
+          const url = process.env.CIPP_URL || process.env.CIPP_API_URL || '(not set)';
+          const hasClientId = !!(process.env.CIPP_CLIENT_ID);
+          const hasClientSecret = !!(process.env.CIPP_CLIENT_SECRET);
+          const hasTenantId = !!(process.env.CIPP_TENANT_ID);
+          result = {
+            configured: hasClientId && hasClientSecret && hasTenantId,
+            cippUrl: url,
+            credentials: {
+              CIPP_URL: url !== '(not set)' ? 'set' : 'NOT SET',
+              CIPP_CLIENT_ID: hasClientId ? 'set' : 'NOT SET — required',
+              CIPP_CLIENT_SECRET: hasClientSecret ? 'set' : 'NOT SET — required',
+              CIPP_TENANT_ID: hasTenantId ? 'set' : 'NOT SET — required',
+            },
+          };
+          break;
+        }
+
         case 'cipp_ping': {
           result = await this.cippService.ping();
           break;
@@ -463,12 +481,26 @@ export class CippToolHandler {
         content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
       };
     } catch (error) {
-      if (error instanceof McpError) {
+      if (error instanceof McpError && error.code === ErrorCode.MethodNotFound) {
+        // Unknown tool — propagate as protocol error so client knows the tool doesn't exist
         throw error;
       }
       const message = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Tool call failed: ${name}`, { error: message });
-      throw new McpError(ErrorCode.InternalError, `Tool ${name} failed: ${message}`);
+      const statusCode = (error as any)?.statusCode ?? (error as any)?.response?.status ?? (error as any)?.status ?? '';
+      const responseBody = (error as any)?.response?.data
+        ? JSON.stringify((error as any).response.data).slice(0, 300)
+        : '';
+      const hint = statusCode === 401 || statusCode === 403
+        ? 'Verify CIPP_URL, CIPP_CLIENT_ID, CIPP_CLIENT_SECRET, and CIPP_TENANT_ID are correct in your environment.'
+        : statusCode === 404
+        ? 'The requested resource was not found. Verify the tenantFilter and resource IDs are correct.'
+        : 'Check that CIPP is reachable at CIPP_URL and your credentials are valid.';
+      const fullMsg = `CIPP API error${statusCode ? ` (HTTP ${statusCode})` : ''}: ${message}${responseBody ? ` — ${responseBody}` : ''}. ${hint}`;
+      this.logger.error(`Tool call failed: ${name}`, { error: fullMsg });
+      return {
+        content: [{ type: 'text', text: fullMsg }],
+        isError: true,
+      };
     }
   }
 }

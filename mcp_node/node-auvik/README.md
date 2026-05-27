@@ -1,3 +1,5 @@
+Part of [ai-tech-toolkit](https://github.com/w159/ai-tech-toolkit) — see repo for the matching MCP server (`mcp_servers/auvik-mcp`) and plugin (`plugins/auvik-*`).
+
 # node-auvik
 
 Node.js client library for the Auvik network monitoring API.

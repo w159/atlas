@@ -8,38 +8,38 @@ function getTools(): Tool[] {
   return [
     {
       name: 'threatlocker_computers_list',
-      description: 'List ThreatLocker computers with optional filters.',
+      description: 'List ThreatLocker-managed computers; filter by searchText, computerGroup, or childOrganizations. Returns computer IDs and hostnames needed for detailed queries.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          searchText: { type: 'string', description: 'Search text filter' },
-          computerGroup: { type: 'string', description: 'Computer group filter' },
-          pageNumber: { type: 'number', description: 'Page number (default 1)' },
-          pageSize: { type: 'number', description: 'Page size (default 50)' },
-          childOrganizations: { type: 'boolean', description: 'Include child organizations' },
+          searchText: { type: 'string', description: 'Free-text search applied to computer name or hostname.' },
+          computerGroup: { type: 'string', description: 'Filter by computer group name to scope results to one group.' },
+          pageNumber: { type: 'number', description: 'Page number for pagination (default: 1).' },
+          pageSize: { type: 'number', description: 'Page size — records per page (default: 50).' },
+          childOrganizations: { type: 'boolean', description: 'When true, includes computers from child organizations.' },
         },
       },
     },
     {
       name: 'threatlocker_computers_get',
-      description: 'Get a single computer by ID.',
+      description: 'Get details of a single ThreatLocker computer by computerId (required). Returns OS, last-check-in, group membership, and policy status.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          computerId: { type: 'string', description: 'Computer ID' },
+          computerId: { type: 'string', description: 'UUID string identifying the ThreatLocker computer.' },
         },
         required: ['computerId'],
       },
     },
     {
       name: 'threatlocker_computers_get_checkins',
-      description: 'Get checkin history for a computer.',
+      description: 'Get check-in history for a ThreatLocker computer by computerId (required). Returns timestamps and connection status for each check-in event.',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          computerId: { type: 'string', description: 'Computer ID' },
-          pageNumber: { type: 'number', description: 'Page number (default 1)' },
-          pageSize: { type: 'number', description: 'Page size (default 50)' },
+          computerId: { type: 'string', description: 'UUID string identifying the ThreatLocker computer.' },
+          pageNumber: { type: 'number', description: 'Page number for pagination (default: 1).' },
+          pageSize: { type: 'number', description: 'Page size — records per page (default: 50).' },
         },
         required: ['computerId'],
       },

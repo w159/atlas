@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const configurationsListTool: Tool = {
   name: 'auvik_configurations_list',
-  description: 'List device configurations managed by Auvik',
+  description: 'List stored device configuration backups in Auvik; filter by device IDs. Returns configIds for fetching specific config content.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -20,7 +20,7 @@ export const configurationsListTool: Tool = {
 
 export const configurationsGetTool: Tool = {
   name: 'auvik_configurations_get',
-  description: 'Get a specific device configuration',
+  description: 'Retrieve the content of a specific device configuration backup by configId (required). Use to review or diff device config.',
   inputSchema: {
     type: 'object',
     properties: {

@@ -13,7 +13,7 @@ function getTools(): Tool[] {
   return [
     modernListTool(
       'paylocity_earnings_company_list',
-      'List company-level earning codes (modern API Hub payroll).'
+      'List company-level earning codes (Modern Payroll API). Returns earning code IDs, descriptions, and taxability flags. Use to discover valid earnings codes before reading employee pay statements with paylocity_pay_statements_*.'
     ),
     legacyListTool(
       'paylocity_earnings_employee_list',

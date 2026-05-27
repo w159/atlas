@@ -51,5 +51,14 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w159/ai-tech-toolkit.git",
+    "directory": "mcp_servers/blumira-mcp"
+  },
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/blumira-mcp",
+  "bugs": {
+    "url": "https://github.com/w159/ai-tech-toolkit/issues"
   }
 }

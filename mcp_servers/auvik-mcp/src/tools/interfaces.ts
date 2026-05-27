@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const interfacesListTool: Tool = {
   name: 'auvik_interfaces_list',
-  description: 'List network interfaces discovered by Auvik',
+  description: 'List network interfaces discovered by Auvik; filter by parent device or interface type. Use before fetching interface statistics.',
   inputSchema: {
     type: 'object',
     properties: {

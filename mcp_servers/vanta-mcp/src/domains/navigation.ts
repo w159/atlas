@@ -50,7 +50,7 @@ export function getNavigationTools(): Tool[] {
     },
     {
       name: 'vanta_status',
-      description: 'Show credentials status, base URL, and available domains.',
+      description: 'Show Vanta credentials status, configured base URL, and list of available domains. Use to verify the connection is healthy before running queries.',
       inputSchema: { type: 'object' as const, properties: {} },
     },
   ];

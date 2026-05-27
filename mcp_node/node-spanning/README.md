@@ -1,3 +1,5 @@
+Part of [ai-tech-toolkit](https://github.com/w159/ai-tech-toolkit) — see repo for the matching MCP server (`mcp_servers/kaseya-spanning-backup-mcp`) and plugin (`plugins/spanning-*`).
+
 # node-spanning
 
 Comprehensive, fully-typed Node.js / TypeScript client library for the

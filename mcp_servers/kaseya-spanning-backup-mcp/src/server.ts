@@ -61,10 +61,15 @@ export function createMcpServer(): Server {
       if (names.includes(name)) {
         try {
           return await handler.handleCall(name, (args || {}) as Record<string, unknown>);
-        } catch (error) {
-          logger.error('Tool call failed', { tool: name, error: (error as Error).message });
+        } catch (error: any) {
+          const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+          const hint = status === 401 || status === 403
+            ? 'Verify SPANNING_ADMIN_EMAIL and SPANNING_API_TOKEN environment variables are correct.'
+            : 'Check Spanning credentials (SPANNING_ADMIN_EMAIL, SPANNING_API_TOKEN) and platform setting (SPANNING_PLATFORM: m365, gws, or salesforce).';
+          const msg = `Spanning API error${status ? ` (HTTP ${status})` : ''}: ${(error as Error).message}. ${hint}`;
+          logger.error('Tool call failed', { tool: name, error: msg });
           return {
-            content: [{ type: 'text' as const, text: `Error: ${(error as Error).message}` }],
+            content: [{ type: 'text' as const, text: msg }],
             isError: true,
           };
         }

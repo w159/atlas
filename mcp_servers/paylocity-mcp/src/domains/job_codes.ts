@@ -8,7 +8,7 @@ function getTools(): Tool[] {
   return [
     modernListTool(
       'paylocity_job_codes_list',
-      'List the job-code catalog (modern Position Management).'
+      'List Paylocity job codes (Position Management Modern API). Returns code, title, and grade rows. Use to discover valid jobCode values for employee position records or pay-band analysis.'
     ),
   ];
 }

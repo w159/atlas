@@ -1,8 +1,8 @@
 # AI Tech Toolkit
 
-A production-grade monorepo of **Model Context Protocol (MCP) servers, vendor SDKs, and Claude Code plugins** that turn an LLM agent into an autonomous **MSP (Managed Service Provider) operator**. One toolkit gives an AI agent first-class access to the security, RMM, PSA, M365, HR, and compliance platforms an MSP runs every day.
+Monorepo of MCP servers, plugins, and supporting Node.js client libraries for common MSP/IT vendor APIs. A production-grade toolkit of **Model Context Protocol (MCP) servers, vendor SDKs, and Claude Code plugins** that turn an LLM agent into an autonomous **MSP (Managed Service Provider) operator**. One toolkit gives an AI agent first-class access to the security, RMM, PSA, M365, HR, backup, and compliance platforms an MSP runs every day.
 
-> Built and maintained by **w159**. The toolkit currently ships **9 MCP servers**, **7 typed Node SDKs**, **9 Claude Code plugins**, and a curated **vendor + framework documentation set** that an AI agent can read directly while it works.
+> Built and maintained by **w159**. The toolkit currently ships **10 MCP servers**, **7 typed Node SDKs**, **10 Claude Code plugins**, and a curated **vendor + framework documentation set** that an AI agent can read directly while it works.
 
 ---
 
@@ -45,7 +45,7 @@ MSPs run a stack of vendor portals — Auvik, NinjaOne, ConnectWise, CIPP/M365, 
 
 ### Core Capabilities
 
-- **9 MCP servers** wrapping the most common MSP vendor APIs.
+- **10 MCP servers** wrapping the most common MSP vendor APIs.
 - **Cross-platform Claude Code plugins** that orchestrate parallel fan-out across vendors (e.g. *morning briefing*, *client 360*, *unified incident response*).
 - **Pre-built `.mcpb` bundles** — drop into Claude Desktop and go.
 - **End-to-end test harness** (`test-mcp-tools.mjs`) that exercises every server against real credentials.
@@ -133,9 +133,9 @@ Every MCP server reads credentials from environment variables at boot (Claude De
 
 ```
 ai-tech-toolkit/
-├── mcp_servers/         9 MCP servers (one per vendor) + _shared tooling
+├── mcp_servers/         10 MCP servers (one per vendor) + _shared tooling
 ├── mcp_node/            7 typed Node.js SDK libraries the servers depend on
-├── plugins/             9 Claude Code plugins (skills + slash commands)
+├── plugins/             10 Claude Code plugins (skills + slash commands)
 ├── docs/                Vendor API docs + framework references (read by AI agents)
 ├── .env.template        Credential template for the test harness
 ├── test-mcp-tools.mjs   End-to-end MCP server tester
@@ -342,15 +342,16 @@ The canonical list lives in [`.env.template`](.env.template). Empty values are t
 
 | Package | Version | Vendor | Bundle |
 |---|---|---|---|
-| [`auvik-mcp`](mcp_servers/auvik-mcp) | 0.1.0 | Auvik network monitoring | `auvik-mcp.mcpb` |
-| [`blumira-mcp`](mcp_servers/blumira-mcp) | 1.1.2 | Blumira SIEM/XDR | `blumira-mcp.mcpb` |
-| [`cipp-mcp`](mcp_servers/cipp-mcp) | 0.1.0 | CIPP — M365 MSP control plane | `cipp-mcp.mcpb` |
-| [`connectwise-manage-mcp`](mcp_servers/connectwise-manage-mcp) | 1.4.0 | ConnectWise Manage PSA | `connectwise-manage-mcp.mcpb` |
-| [`knowbe4-mcp`](mcp_servers/knowbe4-mcp) | 1.0.1 | KnowBe4 security awareness | `knowbe4-mcp.mcpb` |
-| [`ninjaone-mcp`](mcp_servers/ninjaone-mcp) | 1.4.3 | NinjaOne RMM | `ninjaone-mcp.mcpb` |
-| [`paylocity-mcp`](mcp_servers/paylocity-mcp) | 0.1.0 | Paylocity HR/payroll | `paylocity-mcp.mcpb` |
-| [`threatlocker-mcp`](mcp_servers/threatlocker-mcp) | 1.1.0 | ThreatLocker zero-trust EDR | `threatlocker-mcp.mcpb` |
-| [`vanta-mcp`](mcp_servers/vanta-mcp) | 0.1.0 | Vanta GRC / compliance | `vanta-mcp.mcpb` |
+| [`auvik-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/auvik-mcp) | 0.1.0 | Auvik network monitoring | `auvik-mcp.mcpb` |
+| [`blumira-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/blumira-mcp) | 1.1.2 | Blumira SIEM/XDR | `blumira-mcp.mcpb` |
+| [`cipp-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/cipp-mcp) | 0.1.0 | CIPP — M365 MSP control plane | `cipp-mcp.mcpb` |
+| [`connectwise-manage-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/connectwise-manage-mcp) | 1.4.0 | ConnectWise Manage PSA | `connectwise-manage-mcp.mcpb` |
+| [`kaseya-spanning-backup-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/kaseya-spanning-backup-mcp) | 1.0.0 | Kaseya Spanning — SaaS backup for M365/GWS/Salesforce | `kaseya-spanning-backup-mcp.mcpb` |
+| [`knowbe4-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/knowbe4-mcp) | 1.0.1 | KnowBe4 security awareness | `knowbe4-mcp.mcpb` |
+| [`ninjaone-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/ninjaone-mcp) | 1.4.3 | NinjaOne RMM | `ninjaone-mcp.mcpb` |
+| [`paylocity-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/paylocity-mcp) | 0.1.0 | Paylocity HR/payroll | `paylocity-mcp.mcpb` |
+| [`threatlocker-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/threatlocker-mcp) | 1.1.0 | ThreatLocker zero-trust EDR | `threatlocker-mcp.mcpb` |
+| [`vanta-mcp`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_servers/vanta-mcp) | 0.1.0 | Vanta GRC / compliance | `vanta-mcp.mcpb` |
 
 Every server speaks MCP over **stdio JSON-RPC** and registers its tools/resources via `@modelcontextprotocol/sdk`.
 
@@ -363,6 +364,7 @@ Every server speaks MCP over **stdio JSON-RPC** and registers its tools/resource
 | blumira | ⏭ SKIP | — | needs `BLUMIRA_JWT_TOKEN` |
 | cipp | ❌ FAIL | — | HTTP 401 — caller lacks permission for `ListTenants` |
 | connectwise | ✅ PASS | 51 | |
+| kaseya-spanning-backup | ⏭ SKIP | — | needs `SPANNING_ADMIN_EMAIL` + `SPANNING_API_TOKEN` |
 | knowbe4 | ⏭ SKIP | — | needs `KNOWBE4_API_KEY` |
 | ninjaone | ✅ PASS | 23 | |
 | paylocity | ❌ FAIL | — | token mint HTTP 406 — check `Accept` header / scope |
@@ -381,15 +383,16 @@ All plugins live under `plugins/`. Each declares its required MCP servers in `.c
 
 | Plugin | MCP Deps | Skills | Slash Commands |
 |---|---|---|---|
-| [`msp-command-center`](plugins/msp-command-center) | auvik, cipp, connectwise, knowbe4, ninjaone, threatlocker | `client-360`, `cross-platform-incident`, `morning-briefing` | `/briefing`, `/client`, `/incident` |
-| [`auvik-network-ops`](plugins/auvik-network-ops) | auvik | `bandwidth-hog-hunt`, `config-drift-watch`, `network-triage` | `/auvik-triage` |
-| [`cipp-m365-ops`](plugins/cipp-m365-ops) | cipp | `bec-rapid-response`, `full-offboard`, `suspicious-signin-hunt`, `tenant-health-sweep` | `/cipp-morning` |
-| [`connectwise-psa-ops`](plugins/connectwise-psa-ops) | connectwise-manage | `project-burndown`, `sla-breach-radar`, `ticket-triage`, `utilization-report` | `/cw-sla-radar` |
-| [`knowbe4-security-training`](plugins/knowbe4-security-training) | knowbe4 | `campaign-effectiveness`, `phishing-failure-cohort`, `risk-heatmap` | `/kb4-heatmap` |
-| [`ninjaone-rmm-ops`](plugins/ninjaone-rmm-ops) | ninjaone | `fleet-health-sweep`, `mass-incident-response`, `offline-device-hunt` | `/ninja-sweep` |
-| [`paylocity-hr-ops`](plugins/paylocity-hr-ops) | paylocity | `deduction-and-tax-overview`, `new-hire-flow`, `pay-rate-audit`, `roster-snapshot` | `/paylocity-new-hires`, `/paylocity-roster` |
-| [`threatlocker-zerotrust-ops`](plugins/threatlocker-zerotrust-ops) | threatlocker | `approval-queue-triage`, `audit-forensics`, `child-org-rollup` | `/tl-approvals` |
-| [`vanta-compliance-ops`](plugins/vanta-compliance-ops) | vanta | `evidence-gap-hunter`, `framework-audit-readiness`, `vendor-risk-rollup`, `vulnerability-triage` | `/vanta-audit-prep`, `/vanta-morning` |
+| [`msp-command-center`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/msp-command-center) | auvik, cipp, connectwise, knowbe4, ninjaone, threatlocker | `client-360`, `cross-platform-incident`, `morning-briefing` | `/briefing`, `/client`, `/incident` |
+| [`auvik-network-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/auvik-network-ops) | auvik | `bandwidth-hog-hunt`, `config-drift-watch`, `network-triage` | `/auvik-triage` |
+| [`cipp-m365-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/cipp-m365-ops) | cipp | `bec-rapid-response`, `full-offboard`, `suspicious-signin-hunt`, `tenant-health-sweep` | `/cipp-morning` |
+| [`connectwise-psa-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/connectwise-psa-ops) | connectwise-manage | `project-burndown`, `sla-breach-radar`, `ticket-triage`, `utilization-report` | `/cw-sla-radar` |
+| [`kaseya-spanning-backup-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/kaseya-spanning-backup-ops) | kaseya-spanning-backup | `audit-forensics`, `backup-health-sweep`, `license-utilization`, `restore-orchestrator` | `/spanning-health`, `/spanning-restore` |
+| [`knowbe4-security-training`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/knowbe4-security-training) | knowbe4 | `campaign-effectiveness`, `phishing-failure-cohort`, `risk-heatmap` | `/kb4-heatmap` |
+| [`ninjaone-rmm-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/ninjaone-rmm-ops) | ninjaone | `fleet-health-sweep`, `mass-incident-response`, `offline-device-hunt` | `/ninja-sweep` |
+| [`paylocity-hr-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/paylocity-hr-ops) | paylocity | `deduction-and-tax-overview`, `new-hire-flow`, `pay-rate-audit`, `roster-snapshot` | `/paylocity-new-hires`, `/paylocity-roster` |
+| [`threatlocker-zerotrust-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/threatlocker-zerotrust-ops) | threatlocker | `approval-queue-triage`, `audit-forensics`, `child-org-rollup` | `/tl-approvals` |
+| [`vanta-compliance-ops`](https://github.com/w159/ai-tech-toolkit/tree/main/plugins/vanta-compliance-ops) | vanta | `evidence-gap-hunter`, `framework-audit-readiness`, `vendor-risk-rollup`, `vulnerability-triage` | `/vanta-audit-prep`, `/vanta-morning` |
 
 > Plugin docs: <https://docs.claude.com/en/docs/claude-code/plugins>
 
@@ -401,13 +404,13 @@ The MCP servers depend on these standalone, typed Node.js clients. You can use t
 
 | Package | Version | Purpose |
 |---|---|---|
-| [`node-auvik`](mcp_node/node-auvik) | 1.0.0 | Auvik network monitoring API client. |
-| [`node-blumira`](mcp_node/node-blumira) | 1.0.1 | Blumira SIEM API client. |
-| [`node-ninjaone`](mcp_node/node-ninjaone) | 1.1.2 | NinjaOne / NinjaRMM API client — comprehensive, fully typed. |
-| [`node-paylocity`](mcp_node/node-paylocity) | 1.0.0 | Paylocity REST API client. |
-| [`node-spanning`](mcp_node/node-spanning) | 1.0.2 | Spanning Cloud Backup API client (M365 / GWS / SF). |
-| [`node-threatlocker`](mcp_node/node-threatlocker) | 1.0.3 | ThreatLocker Portal API client. |
-| [`node-vanta`](mcp_node/node-vanta) | 1.0.0 | Vanta REST API client. |
+| [`node-auvik`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-auvik) | 1.0.0 | Auvik network monitoring API client. |
+| [`node-blumira`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-blumira) | 1.0.1 | Blumira SIEM API client. |
+| [`node-ninjaone`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-ninjaone) | 1.1.2 | NinjaOne / NinjaRMM API client — comprehensive, fully typed. |
+| [`node-paylocity`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-paylocity) | 1.0.0 | Paylocity REST API client. |
+| [`node-spanning`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-spanning) | 1.0.2 | Spanning Cloud Backup API client (M365 / GWS / SF). |
+| [`node-threatlocker`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-threatlocker) | 1.0.3 | ThreatLocker Portal API client. |
+| [`node-vanta`](https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-vanta) | 1.0.0 | Vanta REST API client. |
 
 Each ships dual ESM/CJS bundles + `.d.ts` via `tsup`, and is fully unit-tested via `vitest`.
 

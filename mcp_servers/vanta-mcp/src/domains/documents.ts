@@ -6,11 +6,11 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_documents_list', 'List evidence documents (policies, training records, attestations).', {
+    listTool('vanta_documents_list', 'List Vanta evidence documents (policies, training records, attestations); filter by frameworkMatchesAny (array of framework IDs) or statusMatchesAny (CURRENT, EXPIRING, MISSING). Use to find evidence gaps or documents approaching expiry for an audit.', {
       frameworkMatchesAny: { type: 'array', items: { type: 'string' }, description: 'Filter to documents tagged for any of these framework IDs.' },
       statusMatchesAny:   { type: 'array', items: { type: 'string' }, description: 'Filter by document status (e.g. CURRENT, EXPIRING, MISSING).' },
     }),
-    getTool('vanta_documents_get', 'Get a single evidence document by ID.', 'id', 'Document ID'),
+    getTool('vanta_documents_get', 'Get a single Vanta evidence document by ID (required). Returns document type, status, expiry date, and linked controls.', 'id', 'Document ID'),
   ];
 }
 

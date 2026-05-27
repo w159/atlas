@@ -5,7 +5,7 @@ import { toMcpError } from '../errors.js';
 
 export const networksListTool: Tool = {
   name: 'auvik_networks_list',
-  description: 'List networks discovered by Auvik',
+  description: 'List networks discovered by Auvik; filter by type or modification date. Returns network IDs for further inspection.',
   inputSchema: {
     type: 'object',
     properties: {
@@ -21,7 +21,7 @@ export const networksListTool: Tool = {
 
 export const networksGetTool: Tool = {
   name: 'auvik_networks_get',
-  description: 'Get information about a specific network',
+  description: 'Get topology and configuration details for a single Auvik network by networkId (required).',
   inputSchema: {
     type: 'object',
     properties: {

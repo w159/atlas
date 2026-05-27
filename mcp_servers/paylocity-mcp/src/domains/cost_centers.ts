@@ -8,7 +8,7 @@ function getTools(): Tool[] {
   return [
     modernListTool(
       'paylocity_cost_centers_list',
-      'List the cost-center catalog (modern API Hub time).'
+      'List Paylocity cost centers (CoreHR Modern API). Returns id/name pairs needed for cost-center filtering on employees and earnings. Use to discover valid costCenter1/2/3 values before filtering employee or earnings tools.'
     ),
   ];
 }

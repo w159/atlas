@@ -25,7 +25,7 @@ export function registerAgreementTools(server: McpServer, client: CwManageClient
 
   server.tool(
     "cw_get_agreement",
-    "Get a specific finance agreement by ID.",
+    "Get a ConnectWise Manage finance agreement by ID (required). Returns agreement type, company, start/end dates, and billing terms.",
     {
       id: z.number().describe("Agreement ID"),
     },
@@ -37,7 +37,7 @@ export function registerAgreementTools(server: McpServer, client: CwManageClient
 
   server.tool(
     "cw_get_agreement_additions",
-    "Get additions (line items) for a specific agreement.",
+    "Get addition line items (products/quantities/rates) for a ConnectWise Manage agreement by agreementId (required).",
     {
       agreementId: z.number().describe("Agreement ID"),
       page: z.number().optional().describe("Page number (default: 1)"),
@@ -54,7 +54,7 @@ export function registerAgreementTools(server: McpServer, client: CwManageClient
 
   server.tool(
     "cw_search_invoices",
-    "Search invoices in ConnectWise Manage.",
+    "Search ConnectWise Manage invoices; use CW query syntax conditions (e.g. \"company/name = 'Acme'\", \"invoiceDate > [2024-01-01]\"). Returns invoice IDs, totals, and status.",
     {
       conditions: z.string().optional().describe("ConnectWise conditions query string (e.g. \"company/name = 'Acme'\")"),
       page: z.number().optional().describe("Page number (default: 1)"),
@@ -74,7 +74,7 @@ export function registerAgreementTools(server: McpServer, client: CwManageClient
 
   server.tool(
     "cw_get_invoice",
-    "Get a specific invoice by ID.",
+    "Get a ConnectWise Manage invoice by ID (required). Returns line items, amounts, due date, and payment status.",
     {
       id: z.number().describe("Invoice ID"),
     },

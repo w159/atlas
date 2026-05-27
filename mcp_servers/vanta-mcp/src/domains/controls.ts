@@ -6,14 +6,14 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_controls_list', 'List controls. Filter by frameworkMatchesAny to narrow to one or more frameworks.', {
+    listTool('vanta_controls_list', 'List Vanta GRC controls; optionally filter by frameworkMatchesAny (array of framework IDs) to narrow to a specific compliance framework. Returns control names, statuses, and owners.', {
       frameworkMatchesAny: {
         type: 'array',
         items: { type: 'string' },
         description: 'Restrict to controls present in any of these framework IDs.',
       },
     }),
-    getTool('vanta_controls_get', 'Get a single control by ID.', 'id', 'Control ID'),
+    getTool('vanta_controls_get', 'Get a single Vanta GRC control by ID (required). Returns status, description, linked tests, and assigned owners.', 'id', 'Control ID'),
   ];
 }
 

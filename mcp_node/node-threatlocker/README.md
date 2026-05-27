@@ -1,3 +1,5 @@
+Part of [ai-tech-toolkit](https://github.com/w159/ai-tech-toolkit) — see repo for the matching MCP server (`mcp_servers/threatlocker-mcp`) and plugin (`plugins/threatlocker-*`).
+
 # node-threatlocker
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

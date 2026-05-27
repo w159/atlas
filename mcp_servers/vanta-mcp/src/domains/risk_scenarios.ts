@@ -6,8 +6,8 @@ import { jsonResult, errorResult, listTool, getTool } from './_helpers.js';
 
 function getTools(): Tool[] {
   return [
-    listTool('vanta_risk_scenarios_list', 'List enterprise risk register scenarios.'),
-    getTool('vanta_risk_scenarios_get', 'Get a single risk scenario by ID.', 'id', 'Risk scenario ID'),
+    listTool('vanta_risk_scenarios_list', 'List Vanta enterprise risk register scenarios with likelihood, impact, and mitigation status. Use to review the full risk register or find a risk scenario ID for deeper inspection.'),
+    getTool('vanta_risk_scenarios_get', 'Get a single Vanta risk scenario by ID (required). Returns risk description, likelihood, impact score, owner, and mitigation plan.', 'id', 'Risk scenario ID'),
   ];
 }
 

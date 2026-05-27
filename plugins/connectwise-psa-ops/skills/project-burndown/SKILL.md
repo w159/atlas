@@ -9,8 +9,7 @@ description: Burn-down and health analysis for a ConnectWise project: phases, ti
 
 1. `cw_get_project` for the named project (resolve by name if needed via `cw_search_projects`).
 2. **Parallel**:
-   - `cw_project_phases_list`
-   - `cw_project_tickets_list`
+   - `cw_search_project_tickets` filter by `projectId` (phases inferred from ticket phase field)
    - `cw_search_time_entries` filter by `projectId`
 3. **Compute**:
    - Hours_spent vs. budgeted_hours per phase.

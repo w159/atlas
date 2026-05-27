@@ -497,12 +497,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       ],
       isError: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     const message = error instanceof Error ? error.message : String(error);
     const stack = error instanceof Error ? error.stack : undefined;
-    logger.error("Tool call failed", { tool: name, error: message, stack });
+    const status = error?.status ?? error?.statusCode ?? error?.response?.status ?? '';
+    const hint = status === 401 || status === 403
+      ? 'Verify KNOWBE4_API_KEY is correct and has the required permissions.'
+      : status === 429
+      ? 'KnowBe4 rate limit hit. Wait before retrying.'
+      : 'Check that KNOWBE4_API_KEY is set and KNOWBE4_REGION matches your account region (us, eu, ca, uk, sg, au).';
+    const msg = `KnowBe4 API error${status ? ` (HTTP ${status})` : ''}: ${message}. ${hint}`;
+    logger.error("Tool call failed", { tool: name, error: msg, stack });
     return {
-      content: [{ type: "text", text: `Error: ${message}` }],
+      content: [{ type: "text", text: msg }],
       isError: true,
     };
   }

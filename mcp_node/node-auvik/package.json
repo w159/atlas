@@ -1,7 +1,7 @@
 {
   "name": "node-auvik",
   "version": "1.0.0",
-  "description": "Node.js client library for the Auvik network monitoring API",
+  "description": "Typed Node.js client for the Auvik network monitoring API; used by auvik-mcp.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -38,12 +38,13 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/w159/node-auvik.git"
+    "url": "git+https://github.com/w159/ai-tech-toolkit.git",
+    "directory": "mcp_node/node-auvik"
   },
   "bugs": {
-    "url": "https://github.com/w159/node-auvik/issues"
+    "url": "https://github.com/w159/ai-tech-toolkit/issues"
   },
-  "homepage": "https://github.com/w159/node-auvik#readme",
+  "homepage": "https://github.com/w159/ai-tech-toolkit/tree/main/mcp_node/node-auvik",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",

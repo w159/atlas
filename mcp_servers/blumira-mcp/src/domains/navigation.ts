@@ -16,12 +16,12 @@ export function getNavigationTools(): Tool[] {
   return [
     {
       name: 'blumira_navigate',
-      description: `Navigate to a domain to see its tools. Domains: ${DOMAINS.join(', ')}.
-- findings: list/search, get, get details, resolve, assign owners, comments
-- agents: list devices, get device, list keys, get key
-- users: list organization users
-- msp: MSP multi-account management — accounts, per-account findings/agents/users
-- resolutions: list available resolution options`,
+      description: `Navigate to a Blumira domain to expose its tools. Call this first before any domain-specific operation. Domains: ${DOMAINS.join(', ')}.
+- findings: list/search findings, get, get details, resolve, assign owners, list/add comments
+- agents: list/get devices and enrollment keys
+- users: list organization users (UUIDs needed for assignments)
+- msp: MSP multi-account — list accounts, per-account findings/agents/users
+- resolutions: list valid resolution codes`,
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -36,7 +36,7 @@ export function getNavigationTools(): Tool[] {
     },
     {
       name: 'blumira_status',
-      description: 'Check Blumira API connection status and available domains.',
+      description: 'Check Blumira API connection status and list available domains. Use to verify credentials are working before navigating to a domain.',
       inputSchema: { type: 'object' as const, properties: {} },
     },
   ];
@@ -45,7 +45,7 @@ export function getNavigationTools(): Tool[] {
 export function getBackTool(): Tool {
   return {
     name: 'blumira_back',
-    description: 'Return to the domain navigation menu.',
+    description: 'Return to the Blumira domain navigation menu. Use after finishing work in a domain to switch to another.',
     inputSchema: { type: 'object' as const, properties: {} },
   };
 }

@@ -8,7 +8,7 @@ function getTools(): Tool[] {
   return [
     getTool(
       'paylocity_pay_statements_summary',
-      'Get a yearly pay statement summary for an employee (modern API Hub payroll).',
+      'Get the yearly pay statement summary for a Paylocity employee (employeeId and year both required). Returns gross pay, net pay, deductions, and taxes by pay period for the calendar year.',
       {
         employeeId: { type: 'string', description: 'Paylocity employeeId' },
         year: {
